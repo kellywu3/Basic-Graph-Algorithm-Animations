@@ -1,4 +1,4 @@
-# Python Breadth First Search Visual
+# Python Graph Algorithms
 
 ## OVERVIEW
 
