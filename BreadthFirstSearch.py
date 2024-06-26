@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import seaborn as sns
 import numpy as np
 import networkx as nx
 import random
 import logging
 
-random.seed(8)
+random.seed(4)
 
 # BREADTH FIRST SEARCH ALGORITHM
 def find_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
@@ -13,6 +14,10 @@ def find_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes
     # final path
     path = []
     path.append(starting_node)
+
+    # list of final paths iterated
+    paths = []
+    paths.append(path)
 
     # list of paths
     queue = []
@@ -26,6 +31,7 @@ def find_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes
     while len(queue) > 0:
         # set path to path popped from queue
         path = queue.pop(0)
+        paths.append(path)
         # get node at end of path
         current_node = path[len(path) - 1]
         
@@ -33,7 +39,7 @@ def find_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes
         if current_node == destination_node:
             print("Valid Path from ", starting_node, "to", destination_node)
             print("Path:", path)
-            return path
+            return paths
 
         # for each not visited neighbor of node at end of path, mark as visited, add to path, and push path to queue
         for neighbor_node in graph.neighbors(current_node):
@@ -47,10 +53,11 @@ def find_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes
     print("No Valid Path from", starting_node, "to", destination_node)
     return
 
-def find_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, queue:list[list], visited:list):
+def find_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, queue:list[list], paths:list[list], visited:list):
     if len(queue) > 0:
         # set path to path popped from queue
         path = queue.pop(0)
+        paths.append(path)
         # get node at end of path
         current_node = path[len(path) - 1]
         
@@ -58,7 +65,7 @@ def find_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, q
         if current_node == destination_node:
             print("Valid Path from", starting_node, "to", destination_node)
             print("Path:", path)
-            return path
+            return paths
 
         # for each not visited neighbor of node at end of path, mark as visited, add to path, and push path to queue
         for neighbor_node in graph.neighbors(current_node):
@@ -68,7 +75,7 @@ def find_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, q
                 new_path.append(neighbor_node)
                 queue.append(new_path)
         
-        return find_path_recurse(graph, starting_node, destination_node, queue, visited)
+        return find_path_recurse(graph, starting_node, destination_node, queue, paths, visited)
     
     # if destination not found, return path not found 
     print("No Valid Path from", starting_node, "to", destination_node)
@@ -81,6 +88,10 @@ def find_path_recursively(graph:nx.Graph, starting_node:int, destination_node:in
     path = []
     path.append(starting_node)
 
+    # list of final paths iterated
+    paths = []
+    paths.append(path)
+
     # list of paths
     queue = []
     queue.append(path)
@@ -90,7 +101,7 @@ def find_path_recursively(graph:nx.Graph, starting_node:int, destination_node:in
     visited[starting_node - 1] = True
 
     # call recursive function
-    return find_path_recurse(graph, starting_node, destination_node, queue, visited)
+    return find_path_recurse(graph, starting_node, destination_node, queue, paths, visited)
 
 def generate_random_node(num_nodes:int):
     print("Calling Generate Random Node")
@@ -112,7 +123,7 @@ def get_maximum_number_edges(num_nodes:int):
 
 def generate_random_edge(num_nodes:int):
     print("Calling Generate Random Edge")
-    edge = (random.randrange(num_nodes), random.randrange(num_nodes))
+    edge = (random.randrange(1, num_nodes + 1), random.randrange(1, num_nodes + 1))
     print("Random Edge:", edge)
     return edge
 
@@ -150,29 +161,48 @@ def generate_graph(nodes:list[int], edges:list[tuple]):
     return graph
 
 # generate nodes
-num_nodes = 10
-nodes = generate_nodes(10)
+num_nodes = 16
+nodes = generate_nodes(16)
 
 # generate random number of edges [0, maximum_number_edges]
 num_edges = random.randrange(0, get_maximum_number_edges(num_nodes) + 1)
 edges = generate_random_edges(num_nodes, num_edges)
 
-# generatge random starting node
-starting_node = generate_random_node(num_nodes)
+# generate random starting node
+starting_node = 1
 print("Starting Node:", starting_node)
 
 # generate random destination node
-destination_node = generate_random_node(num_nodes)
+destination_node = num_nodes
 print("Destination Node:", destination_node)
 
 # generate random graph
 graph = generate_graph(nodes, edges)
-nx.draw(graph, with_labels=True)
-plt.savefig("graph.png")
-# nx.draw(graph, node_color=color_map)
 
 # test breadth first search
-find_path(graph, starting_node, destination_node, num_nodes)
+paths = find_path(graph, starting_node, destination_node, num_nodes)
 
 # test breadth first search recursive
-find_path_recursively(graph, starting_node, destination_node, num_nodes)
+paths = find_path_recursively(graph, starting_node, destination_node, num_nodes)
+
+pos = nx.spring_layout(graph)
+fig, ax = plt.subplots()
+
+def update(frame:int):
+    ax.clear()
+
+    path_nodes = paths[frame]
+    path_edges = [(path_nodes[i], path_nodes[i + 1]) for i in range(len(path_nodes) - 1)] if len(path_nodes) > 1 else []
+
+    # background frame
+    nx.draw_networkx_edges(graph, pos=pos, ax=ax, edgelist=graph.edges(), edge_color="black", width=1)
+    nx.draw_networkx_nodes(graph, pos=pos, ax=ax, nodelist=graph.nodes(), node_color="white", edgecolors="black", node_size=400, linewidths=1)
+
+    # animation frame
+    nx.draw_networkx_edges(graph, pos=pos, ax=ax, edgelist=path_edges, edge_color="yellow", width=2)
+    nx.draw_networkx_nodes(graph, pos=pos, ax=ax, nodelist=path_nodes, node_color="yellow", edgecolors="black", node_size=450, linewidths=2)
+
+    nx.draw_networkx_labels(graph, pos=pos, ax=ax, font_color="black")
+
+ani = animation.FuncAnimation(fig=fig, func=update, frames=len(paths), interval=400, repeat=True)
+plt.show()

@@ -27,6 +27,10 @@ freeze requirements:
 ```shell
 pipenv requirements > requirements.txt
 ```
+show packages:
+```shell
+pipenv graph
+```
 
 [**venv**](https://docs.python.org/3/library/venv.html)
 - **Python Virtual Environment Tool**: creates isolated environments by creating a subdirectory with a custom, modifiable bin directory.
