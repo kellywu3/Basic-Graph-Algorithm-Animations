@@ -7,6 +7,51 @@ import random
 import logging
 
 random.seed(4)
+# NODE TO INDEX
+def node_to_index(node:int):
+    """ converts node value to list index
+
+        * node:int - node value
+
+    """
+    print("Calling Node to Index")
+
+    return node - 1
+
+# INDEX TO NODE
+def index_to_node(index:int):
+    """ converts list index to node value
+
+        * index:int - index value
+
+    """
+    print("Calling Index to Node")
+
+    return index + 1
+
+# INITIALIZE VISITED
+def initialize_visited(num_nodes:int):
+    """ initializes boolean list for tracking visited nodes
+
+        * num_nodes:int - number of nodes in graph
+
+    """
+    print("Calling Initialize Visited")
+
+    visited = [False for i in range(num_nodes)]
+    return visited
+
+# TRANSLATE VISITED TO VISITED LIST
+def translate_visited_to_visited_list(visited:list):
+    """ translates boolean visited list to list of visited nodes
+
+        * visited:list - list of boolean values indicating whether a node is visited
+
+    """
+    print("Calling Initialize Visited")
+
+    new_list = [index_to_node(i) for i in range(len(visited)) if visited[i] == True]
+    return new_list
 
 # BREADTH FIRST SEARCH ALGORITHM
 def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
@@ -16,58 +61,71 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
         * starting_node:int - index of the starting node
         * destination_node:int - index of the destination node
         * num_nodes:int - number of nodes in graph
+
     """
     print("Calling Iterative Breadth First Search")
+
     # final path
     path = []
     path.append(starting_node)
 
     # list of paths
     queue = []
-    queue.append(path)
+    queue.append(path.copy())
 
     # list of visited nodes
-    visited = [False for i in range(num_nodes)]
-    visited[starting_node - 1] = True
+    visited = initialize_visited(num_nodes=num_nodes)
+    visited[node_to_index(starting_node)] = True
 
-    # list of all traversed paths
-    path_list = []
-    path_list.append(path.copy())
-
-    # list of corresponding visited nodes
+    # list of all traversed and visited paths for graphics
+    traversed_list = []
+    traversed_list.append(path.copy())
     visited_list = []
-    visited_list.append(visited)
+    visited_list.append(translate_visited_to_visited_list(visited=visited))
 
     # while queue not empty, check each path in queue
     while len(queue) > 0:
         # set path to path popped from queue
         path = queue.pop(0)
-        path_list.append(path.copy())
-        visited_nodes = [i + 1 for i in range(len(visited)) if visited[i] == True]
-        visited_list.append(visited_nodes)
+
         # get node at end of path
         current_node = path[-1]
-        
-        # if node at end of path is destination, return path found
-        if current_node == destination_node:
-            print("Valid Path from ", starting_node, "to", destination_node)
-            print("Path:", path)
-            return True, path_list, visited_list
 
-        # for each not visited neighbor of node at end of path, mark as visited, add to path, and push path to queue
-        for neighbor_node in graph.neighbors(current_node):
-            if not visited[neighbor_node - 1]:
-                visited[neighbor_node - 1] = True
+        # graphics
+        traversed_list.append(path.copy())
+        visited_list.append(translate_visited_to_visited_list(visited=visited))
+
+        # check each neighbor
+        neighbors = sorted(graph.neighbors(current_node))
+        for neighbor_node in neighbors:
+
+            # for each not visited neighbor, mark as visited, add to path, and push path to queue
+            if not visited[node_to_index(neighbor_node)]:
+                visited[node_to_index(neighbor_node)] = True
                 new_path = path.copy()
                 new_path.append(neighbor_node)
-                queue.append(new_path)
+                queue.append(new_path.copy())
+
+                # graphics
+                traversed_list.append(new_path.copy())
+                visited_list.append(translate_visited_to_visited_list(visited=visited))
+
+                # if node at end of path is destination, return path found
+                if neighbor_node == destination_node:
+                    print("Valid Path from ", starting_node, "to", destination_node)
+                    print("Path:", new_path)
+                    return True, traversed_list, visited_list
+                
+                # graphics
+                traversed_list.append(path)
+                visited_list.append(translate_visited_to_visited_list(visited=visited))
 
     # if destination not found, return path not found 
     print("No Valid Path from", starting_node, "to", destination_node)
-    return False, path_list, visited_list
+    return False, traversed_list, visited_list
 
 # BREADTH FIRST SEARCH RECURSIVE HELPER
-def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, queue:list[list], visited:list, path_list:list[list], visited_list:list[list]):
+def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, queue:list[list], visited:list, traversed_list:list[list], visited_list:list[list]):
     """ recursive function used in find_breadthfirstsearch_path_recursively
 
         * graph:nx.Graph - graph to find path
@@ -76,35 +134,55 @@ def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, dest
         * queue:list[list] - list of paths used in as a queue in search
         * paths:list[list] - list of paths returned
         * visited:list - list of boolean values indicating whether a node is visited
+        * traversed_list:list[list] - list of lists of traversed nodes for graphics
+        * visited_list:list[list] - list of lists of visited nodes for graphics
+
     """
+    print("Calling Breadth First Search Recursive Helper")
+
     if len(queue) > 0:
         # set path to path popped from queue
         path = queue.pop(0)
-        path_list.append(path.copy())
-        visited_nodes = [i + 1 for i in range(len(visited)) if visited[i] == True]
-        visited_list.append(visited_nodes)
+
         # get node at end of path
         current_node = path[-1]
-        
-        # if node at end of path is destination, return path found
-        if current_node == destination_node:
-            print("Valid Path from", starting_node, "to", destination_node)
-            print("Path:", path)
-            return True, path_list, visited_list
 
-        # for each not visited neighbor of node at end of path, mark as visited, add to path, and push path to queue
-        for neighbor_node in graph.neighbors(current_node):
-            if not visited[neighbor_node - 1]:
-                visited[neighbor_node - 1] = True
+        # graphics
+        traversed_list.append(path.copy())
+        visited_list.append(translate_visited_to_visited_list(visited=visited))
+
+        # check each neighbor
+        neighbors = sorted(graph.neighbors(current_node))
+        for neighbor_node in neighbors:
+
+            # for each not visited neighbor, mark as visited, add to path, and push path to queue
+            if not visited[node_to_index(neighbor_node)]:
+                visited[node_to_index(neighbor_node)] = True
                 new_path = path.copy()
                 new_path.append(neighbor_node)
-                queue.append(new_path)
-        
-        return find_breadthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, queue=queue, visited=visited, path_list=path_list, visited_list=visited_list)
+                queue.append(new_path.copy())
+
+                # graphics
+                traversed_list.append(new_path.copy())
+                visited_list.append(translate_visited_to_visited_list(visited=visited))
+
+                # if node at end of path is destination, return path found
+                if neighbor_node == destination_node:
+                    print("Valid Path from ", starting_node, "to", destination_node)
+                    print("Path:", new_path)
+                    return True, traversed_list, visited_list
+                
+                # graphics
+                traversed_list.append(path)
+                visited_list.append(translate_visited_to_visited_list(visited=visited))
+
+        # call recursive function
+        return find_breadthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, queue=queue, visited=visited, traversed_list=traversed_list, visited_list=visited_list)
     
-    # if destination not found, return path not found 
-    print("No Valid Path from", starting_node, "to", destination_node)
-    return False, path_list, visited_list
+    else:
+        # if destination not found, return path not found 
+        print("No Valid Path from", starting_node, "to", destination_node)
+        return False, traversed_list, visited_list
 
 # BREADTH FIRST SEARCH RECURSIVE ALGORITHM
 def find_breadthfirstsearch_path_recursively(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
@@ -114,95 +192,117 @@ def find_breadthfirstsearch_path_recursively(graph:nx.Graph, starting_node:int, 
         * starting_node:int - index of the starting node
         * destination_node:int - index of the destination node
         * num_nodes:int - number of nodes in graph
+
     """
     print("Calling Recursive Breadth First Search")
+
     # final path
     path = []
     path.append(starting_node)
 
     # list of paths
     queue = []
-    queue.append(path)
+    queue.append(path.copy())
 
     # list of visited nodes
-    visited = [False for i in range(num_nodes)]
-    visited[starting_node - 1] = True
+    visited = initialize_visited(num_nodes=num_nodes)
+    visited[node_to_index(starting_node)] = True
 
-    # list of all traversed paths
-    path_list = []
-    path_list.append(path.copy())
-
-    # list of corresponding visited nodes
+    # list of all traversed and visited paths for graphics
+    traversed_list = []
+    traversed_list.append(path.copy())
     visited_list = []
-    visited_list.append(visited)
+    visited_list.append(translate_visited_to_visited_list(visited=visited))
 
     # call recursive function
-    return find_breadthfirstsearch_path_recurse(graph, starting_node, destination_node, queue, visited, path_list, visited_list,)
+    return find_breadthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, queue=queue, visited=visited, traversed_list=traversed_list, visited_list=visited_list)
 
 # DEPTH FIRST SEARCH ALGORITHM
 def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
+    """ finds shortest path in the graph between the starting node and the destination node using depth first search
+
+        * graph:nx.Graph - graph to find path
+        * starting_node:int - index of the starting node
+        * destination_node:int - index of the destination node
+        * num_nodes:int - number of nodes in graph
+
+    """
+    print("Calling Depth First Search")
+
     # final path
     path = []
     path.append(starting_node)
 
     # list of paths
     stack = []
-    stack.append(path)
+    stack.append(path.copy())
 
     # list of visited nodes
-    visited = [False for i in range(num_nodes)]
-    visited[starting_node - 1] = True
+    visited = initialize_visited(num_nodes=num_nodes)
+    visited[node_to_index(starting_node)] = True
 
-    # list of all traversed paths
-    path_list = []
-    path_list.append(path.copy())
-
-    # list of corresponding visited nodes
+    # list of all traversed and visited paths for graphics
+    traversed_list = []
+    traversed_list.append(path.copy())
     visited_list = []
-    visited_list.append(visited)
+    visited_list.append(translate_visited_to_visited_list(visited=visited))
 
-    # while stack not empty, check each path in stack
+    # while stack not empty, check each path in queue
     while len(stack) > 0:
-        # set path to path popped from stack
-        path = stack.pop()
-        path_list.append(path.copy())
-        visited_nodes = [i + 1 for i in range(len(visited)) if visited[i] == True]
-        visited_list.append(visited_nodes)
+        # set path to path from stack
+        path = stack[-1]
+
         # get node at end of path
         current_node = path[-1]
-        
-        # if node at end of path is destination, return path found
-        if current_node == destination_node:
-            print("Valid Path from ", starting_node, "to", destination_node)
-            print("Path:", path)
-            return True, path_list, visited_list
 
-        # for each not visited neighbor of node at end of path, mark as visited, add to path, and push path to stack
-        for neighbor_node in graph.neighbors(current_node):
-            if not visited[neighbor_node - 1]:
-                visited[neighbor_node - 1] = True
-                new_path = path.copy()
-                new_path.append(neighbor_node)
-                stack.append(new_path)
+        # graphics
+        traversed_list.append(path.copy())
+        visited_list.append(translate_visited_to_visited_list(visited=visited))
+
+        # check if unvisited neighbor exists
+        neighbors = sorted(graph.neighbors(current_node))
+        neighbor_node = None
+        for node in neighbors:
+            if not visited[node_to_index(node)]:
+                neighbor_node = node
+                break
+
+        # for the first not visited neighbor, mark as visited, add to path, and push path to stack
+        if neighbor_node:
+            visited[node_to_index(neighbor_node)] = True
+            new_path = path.copy()
+            new_path.append(neighbor_node)
+            stack.append(new_path.copy())
+
+            # graphics
+            traversed_list.append(new_path.copy())
+            visited_list.append(translate_visited_to_visited_list(visited=visited))
+
+            # if node at end of path is destination, return path found
+            if neighbor_node == destination_node:
+                print("Valid Path from ", starting_node, "to", destination_node)
+                print("Path:", new_path)
+                return True, traversed_list, visited_list
+            
+        else:
+            # graphics
+            path = stack.pop(-1)
+            traversed_list.append(path)
+            visited_list.append(translate_visited_to_visited_list(visited=visited))
 
     # if destination not found, return path not found 
     print("No Valid Path from", starting_node, "to", destination_node)
-    return False, path_list, visited_list
-
-            # else:
-            #     num_back_track_nodes = len(path) - len(stack[len(stack) - 1]) + 1
-            #     new_path = path.copy()
-            #     for i in range(num_back_track_nodes):
-            #         new_path.pop()
-            #         paths.append(new_path)
+    return False, traversed_list, visited_list
 
 # GENERATE RANDOM NODE
 def generate_random_node(num_nodes:int):
     """ generates random node index for nodes in graph with num_nodes nodes
 
         * num_nodes:int - number of nodes in graph
+
     """
     print("Calling Generate Random Node")
+
     node = random.randrange(start=1, stop=num_nodes + 1)
     print("Random Node:", node)
     return node
@@ -212,8 +312,10 @@ def generate_nodes(num_nodes:int):
     """ generates list of nodes for graph with num_nodes
 
         * num_nodes:int - number of nodes in graph
+
     """
     print("Calling Generate Nodes")
+
     nodes = [i for i in range(1, num_nodes + 1)]
     print("Nodes:", nodes)
     return nodes
@@ -223,8 +325,10 @@ def get_maximum_number_edges(num_nodes:int):
     """ finds the maximum number of edges for graph with num_nodes nodes
 
     * num_nodes:int - number of nodes in graph
+
     """
     print("Calling Get Maximum Number Edges")
+
     max_num_edges = num_nodes * (num_nodes - 1) // 2
     print("Maximum Number Edges:", max_num_edges)
     return max_num_edges
@@ -234,8 +338,10 @@ def generate_random_edge(num_nodes:int):
     """ helper function used in generate_random_edges
 
         * num_nodes:int - number of nodes in graph
+
     """
     print("Calling Generate Random Edge")
+
     edge = (random.randrange(1, num_nodes + 1), random.randrange(1, num_nodes + 1))
     print("Random Edge:", edge)
     return edge
@@ -246,8 +352,10 @@ def generate_random_edges(num_nodes:int, num_edges:int):
 
         * num_nodes:int - number of nodes in graph
         * num_edges:int - number of edges in graph
+
     """
     print("Calling Generate Random Edges")
+
     edges = []
 
     for i in range(num_edges):
@@ -267,7 +375,10 @@ def generate_graph(nodes:list[int], edges:list[tuple]):
 
         * nodes:list[int] - list of nodes to add to graph
         * edges:list[tuple] - list of edges to add to graph
+
     """
+    print("Calling Generate Graph")
+
     graph = nx.Graph()
     print("Number of Nodes:", len(nodes))
     print("Number of Edges:", len(edges))
@@ -292,8 +403,10 @@ def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, de
         * num_edges:int - number of edges in graph
         * starting_node:int - index of the starting node
         * destination_node:int - index of the destination node
+
     """
     print("Calling Generate Graph Animation")
+
     # generate nodes, random edges, and graph
     nodes = generate_nodes(num_nodes=num_nodes)
     print(num_nodes, "Nodes Generated")
@@ -307,27 +420,28 @@ def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, de
     print("Destination Node:", destination_node)
 
     # run search algorithm
-    path_found, path_list, visited_list = function(graph=graph, starting_node=starting_node, destination_node=destination_node, num_nodes=num_nodes)
+    path_found, traversed_list, visited_list = function(graph=graph, starting_node=starting_node, destination_node=destination_node, num_nodes=num_nodes)
 
     pos = nx.spring_layout(G=graph)
     fig, ax = plt.subplots()
 
+    # update function used to iterate through animation
     def update(frame:int):
         ax.clear()
 
-        path_nodes = path_list[frame]
-        visited_nodes = visited_list[frame]
+        path_nodes = traversed_list[frame]
         path_edges = [(path_nodes[i], path_nodes[i + 1]) for i in range(len(path_nodes) - 1)] if len(path_nodes) > 1 else []
+        visited_nodes = visited_list[frame]
 
         # background frame
         nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=graph.edges(), edge_color="black", width=1)
         nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=graph.nodes(), node_color="white", edgecolors="black", node_size=400, linewidths=1)
 
+        # visited nodes frame
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=visited_nodes, node_color="grey", edgecolors="black", node_size=450, linewidths=1)
+
         # start and end node frame
         nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=(starting_node, destination_node), node_color="white", edgecolors="black", node_size=450, linewidths=2)
-
-        # visited nodes frame
-        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=visited_nodes, node_color="gray", edgecolors="black", node_size=450, linewidths=1)
 
         # animation nodes frame
         nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=path_edges, edge_color="yellow", width=2)
@@ -341,21 +455,24 @@ def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, de
         if function == find_breadthfirstsearch_path or function == find_breadthfirstsearch_path_recursively:
             title = title + "Breadth First Search: "
         # check if path found
-        if(frame == len(path_list) - 1):
+        if(frame == len(traversed_list) - 1):
+
             if path_found:
-                title = title + "Trial " + str(frame) + "- Path Found at " + str(path_nodes)
+                title = title + "Path Found at " + str(path_nodes)
+
             else:
-                title = title + "Trial " + str(frame) + "- Path Not Found"
+                title = title + "Path Not Found"
+
         else:
-            title = title + "Trial " + str(frame) + "- " + str(path_nodes)
+            title = title + str(path_nodes)
         
         ax.set_title(title)
 
-    ani = animation.FuncAnimation(fig=fig, func=update, frames=len(path_list), interval=600, repeat=True, repeat_delay=600)
+    ani = animation.FuncAnimation(fig=fig, func=update, frames=len(traversed_list), interval=600, repeat=True, repeat_delay=600)
     plt.show()
 
 # set up and call animation function
-num_nodes = 16
+num_nodes = 8
 num_edges = random.randrange(start=0, stop=get_maximum_number_edges(num_nodes) + 1)
 starting_node = 1
 destination_node = num_nodes
