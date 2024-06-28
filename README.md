@@ -4,12 +4,14 @@
 
 
 ## LIBRARIES/REQUIREMENTS
+
 - [Matplotlib.pyplot](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html)
 - [Matplotlib.animation](https://matplotlib.org/stable/api/animation_api.html)
 - [NumPy](https://numpy.org)
 - [NetworkX](https://networkx.org)
 
 ## TOOLS
+
 [**pipenv**](https://pipenv.pypa.io/en/latest/)
 - **Python Environment Packaging Tool**: creates flexible environment manipulation and containment by storing various environments in a common directory.
 - **Dependency Resolution**: various projects may need different tool versions. dependencies versions downloaded system wide are hard to change. pipenv creates separate environments to easily switch between environments.  
@@ -59,8 +61,10 @@ pip freeze > requirements.txt
 ```
 
 ## CONCEPTS
+
 **Breadth First Search**
-- graph traversal algorithm to search for specific nodes
+- graph traversal algorithm to search for specific nodes from a starting node
+- uses a queue to search graphs breadth first
 
 pseudocode: 
 ```pseudo
@@ -75,12 +79,8 @@ breadth_first_search(graph, starting_node, destination node, num_nodes) {
     mark starting_node as visited
 
     while queue not empty {
-        set path to the first entry in queue
+        pop queue and set path to the first entry in queue
         let current_node be the last node in path
-
-        if current_node is destination node {
-            return path
-        }
 
         for neighbors neighbor_node of current_node in graph {
 
@@ -89,15 +89,66 @@ breadth_first_search(graph, starting_node, destination node, num_nodes) {
                 let new_path be a copy of path
                 add neighbor_node to new_path
                 add new_path to queue
+
+                if current_node is destination node {
+                    return path
+                }
+
             }
 
         }
 
     }
+    
+    return path not found
+
+}
+```
+
+**Depth First Search**
+- graph traversal algorithm to search for specific nodes from a starting node
+- uses a stack to search graphs depth first
+
+pseudocode: 
+```pseudo
+breadth_first_search(graph, starting_node, destination node, num_nodes) {
+    let path be a list
+    add starting_node to path
+
+    let stack be a list
+    add path to stack
+
+    let visited be a list
+    mark starting_node as visited
+
+    while stack not empty {
+        set path to the last entry in stack
+        let current_node be the last node in path
+
+        set neighbor_node to neighboring, unvisited node of current_node
+
+        if neighbor_node exists {
+
+            mark neighbor_node as visited
+            let new_path be a copy of path
+            add neighbor_node to new_path
+            add new_path to queue
+
+            if current_node is destination node {
+                return path
+            }
+
+        } else {
+            pop stack
+        }
+
+    }
+
     return path not found
 
 }
 ```
 
 ## SOURCES
+
 - [Matplotlib animations](https://matplotlib.org/stable/users/explain/animations/animations.html)
