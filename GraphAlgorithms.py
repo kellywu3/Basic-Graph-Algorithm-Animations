@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import seaborn as sns
 import numpy as np
 import networkx as nx
 import random
@@ -56,7 +55,7 @@ def translate_visited_to_visited_list(visited:list):
 # BREADTH FIRST SEARCH ALGORITHM
 def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
     """ finds shortest path in the graph between the starting node and the destination node using breadth first search
-        returns bool, traversed_list, visited_list, titles_list indicating if the path is found and lists used for graphics
+        returns bool, traversed_list, visited_list, labels_list indicating if the path is found and lists used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the starting node
@@ -78,14 +77,14 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
     visited = initialize_visited(num_nodes=num_nodes)
     visited[node_to_index(starting_node)] = True
 
-    # list of all traversed paths, visited paths, and titles for graphics
+    # list of all traversed paths, visited paths, and labels for graphics
     traversed_list = []
     traversed_list.append(path.copy())
     visited_list = []
     visited_list.append(translate_visited_to_visited_list(visited=visited))
-    title = "Breadth First Search: Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
-    titles_list = []
-    titles_list.append(title)
+    title = "Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
+    labels_list = []
+    labels_list.append(title)
 
     # while queue not empty, check each path in queue
     while len(queue) > 0:
@@ -98,8 +97,8 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
         # graphics
         traversed_list.append(path.copy())
         visited_list.append(translate_visited_to_visited_list(visited=visited))
-        title = "Breadth First Search: Checking Neighbors of Node " + str(current_node)
-        titles_list.append(title)
+        title = "Checking Neighbors of Node " + str(current_node)
+        labels_list.append(title)
 
         # check each neighbor
         neighbors = sorted(graph.neighbors(current_node))
@@ -115,8 +114,8 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
                 # graphics
                 traversed_list.append(new_path.copy())
                 visited_list.append(translate_visited_to_visited_list(visited=visited))
-                title = "Breadth First Search: Neighbor Node " + str(neighbor_node) + " Visited"
-                titles_list.append(title)
+                title = "Neighbor Node " + str(neighbor_node) + " Visited"
+                labels_list.append(title)
 
                 # if node at end of path is destination, return path found
                 if neighbor_node == destination_node:
@@ -126,16 +125,16 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
                     # graphics
                     traversed_list.append(new_path.copy())
                     visited_list.append(translate_visited_to_visited_list(visited=visited))
-                    title = "Breadth First Search: Path Found at " + str(new_path)
-                    titles_list.append(title)
+                    title = "Path Found at " + str(new_path)
+                    labels_list.append(title)
 
-                    return True, traversed_list, visited_list, titles_list
+                    return "Breadth First Search: ", True, traversed_list, visited_list, labels_list
                 
                 # graphics
                 traversed_list.append(path)
                 visited_list.append(translate_visited_to_visited_list(visited=visited))
-                title = "Breadth First Search: Checking Neighbors of Node " + str(current_node)
-                titles_list.append(title)
+                title = "Checking Neighbors of Node " + str(current_node)
+                labels_list.append(title)
 
     # if destination not found, return path not found 
     print("No Valid Path from", starting_node, "to", destination_node)
@@ -143,13 +142,13 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
     # graphics
     traversed_list.append(path.copy())
     visited_list.append(translate_visited_to_visited_list(visited=visited))
-    title = "Breadth First Search: No Path Found"
-    titles_list.append(title)
+    title = "No Path Found"
+    labels_list.append(title)
 
-    return False, traversed_list, visited_list, titles_list
+    return "Breadth First Search: ", False, traversed_list, visited_list, labels_list
 
 # BREADTH FIRST SEARCH RECURSIVE HELPER
-def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, queue:list[list], visited:list[bool], traversed_list:list[list], visited_list:list[list], titles_list:list[str]):
+def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, queue:list[list], visited:list[bool], traversed_list:list[list], visited_list:list[list], labels_list:list[str]):
     """ recursive function used in find_breadthfirstsearch_path_recursively
 
         * graph:nx.Graph - graph to find path
@@ -160,7 +159,7 @@ def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, dest
         * visited:list[bool] - list of boolean values indicating whether a node is visited
         * traversed_list:list[list] - list of lists of traversed nodes for graphics
         * visited_list:list[list] - list of lists of visited nodes for graphics
-        * titles_list:list[str] - list of strings of titles for graphics
+        * labels_list:list[str] - list of strings of titles for graphics
 
     """
     print("Calling Breadth First Search Recursive Helper")
@@ -175,8 +174,8 @@ def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, dest
         # graphics
         traversed_list.append(path.copy())
         visited_list.append(translate_visited_to_visited_list(visited=visited))
-        title = "Breadth First Search: Checking Neighbors of Node " + str(current_node)
-        titles_list.append(title)
+        title = "Checking Neighbors of Node " + str(current_node)
+        labels_list.append(title)
 
         # check each neighbor
         neighbors = sorted(graph.neighbors(current_node))
@@ -192,8 +191,8 @@ def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, dest
                 # graphics
                 traversed_list.append(new_path.copy())
                 visited_list.append(translate_visited_to_visited_list(visited=visited))
-                title = "Breadth First Search: Neighbor Node " + str(neighbor_node) + " Visited"
-                titles_list.append(title)
+                title = "Neighbor Node " + str(neighbor_node) + " Visited"
+                labels_list.append(title)
 
                 # if node at end of path is destination, return path found
                 if neighbor_node == destination_node:
@@ -203,29 +202,29 @@ def find_breadthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, dest
                     # graphics
                     traversed_list.append(new_path.copy())
                     visited_list.append(translate_visited_to_visited_list(visited=visited))
-                    title = "Breadth First Search: Path Found at " + str(new_path)
-                    titles_list.append(title)
+                    title = "Path Found at " + str(new_path)
+                    labels_list.append(title)
 
-                    return True, traversed_list, visited_list, titles_list
+                    return "Breadth First Search: ", True, traversed_list, visited_list, labels_list
                 
                 # graphics
                 traversed_list.append(path)
                 visited_list.append(translate_visited_to_visited_list(visited=visited))
-                title = "Breadth First Search: Checking Neighbors of Node " + str(current_node)
-                titles_list.append(title)
+                title = "Checking Neighbors of Node " + str(current_node)
+                labels_list.append(title)
 
         # call recursive function
-        return find_breadthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, queue=queue, visited=visited, traversed_list=traversed_list, visited_list=visited_list, titles_list=titles_list)
+        return find_breadthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, queue=queue, visited=visited, traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list)
     
     else:
         # if destination not found, return path not found 
         print("No Valid Path from", starting_node, "to", destination_node)
-        return False, traversed_list, visited_list, titles_list
+        return "Breadth First Search: ", False, traversed_list, visited_list, labels_list
 
 # BREADTH FIRST SEARCH RECURSIVE ALGORITHM
 def find_breadthfirstsearch_path_recursively(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
     """ finds shortest path in the graph between the starting node and the destination node using breadth first search recursive
-        returns bool, traversed_list, visited_list, titles_list indicating if the path is found and lists used for graphics
+        returns bool, traversed_list, visited_list, labels_list indicating if the path is found and lists used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the starting node
@@ -247,22 +246,22 @@ def find_breadthfirstsearch_path_recursively(graph:nx.Graph, starting_node:int, 
     visited = initialize_visited(num_nodes=num_nodes)
     visited[node_to_index(starting_node)] = True
 
-    # list of all traversed paths, visited paths, and titles for graphics
+    # list of all traversed paths, visited paths, and labels for graphics
     traversed_list = []
     traversed_list.append(path.copy())
     visited_list = []
     visited_list.append(translate_visited_to_visited_list(visited=visited))
-    title = "Breadth First Search: Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
-    titles_list = []
-    titles_list.append(title)
+    title = "Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
+    labels_list = []
+    labels_list.append(title)
 
     # call recursive function
-    return find_breadthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, queue=queue, visited=visited, traversed_list=traversed_list, visited_list=visited_list, titles_list=titles_list)
+    return find_breadthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, queue=queue, visited=visited, traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list)
 
 # DEPTH FIRST SEARCH ALGORITHM
 def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
     """ finds shortest path in the graph between the starting node and the destination node using depth first search
-        returns bool, traversed_list, visited_list, titles_list indicating if the path is found and lists used for graphics
+        returns bool, traversed_list, visited_list, labels_list indicating if the path is found and lists used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the starting node
@@ -284,14 +283,14 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
     visited = initialize_visited(num_nodes=num_nodes)
     visited[node_to_index(starting_node)] = True
 
-    # list of all traversed paths, visited paths, and titles for graphics
+    # list of all traversed paths, visited paths, and labels for graphics
     traversed_list = []
     traversed_list.append(path.copy())
     visited_list = []
     visited_list.append(translate_visited_to_visited_list(visited=visited))
-    title = "Depth First Search: Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
-    titles_list = []
-    titles_list.append(title)
+    title = "Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
+    labels_list = []
+    labels_list.append(title)
 
     # while stack not empty, check each path in queue
     while len(stack) > 0:
@@ -304,8 +303,8 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
         # graphics
         traversed_list.append(path.copy())
         visited_list.append(translate_visited_to_visited_list(visited=visited))
-        title = "Depth First Search: Checking Neighbors of Node " + str(current_node)
-        titles_list.append(title)
+        title = "Checking Neighbors of Node " + str(current_node)
+        labels_list.append(title)
 
         # check if unvisited neighbor exists
         neighbors = sorted(graph.neighbors(current_node))
@@ -325,8 +324,8 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
             # graphics
             traversed_list.append(new_path.copy())
             visited_list.append(translate_visited_to_visited_list(visited=visited))
-            title = "Depth First Search: Neighbor Node " + str(neighbor_node) + " Visited"
-            titles_list.append(title)
+            title = "Neighbor Node " + str(neighbor_node) + " Visited"
+            labels_list.append(title)
 
             # if node at end of path is destination, return path found
             if neighbor_node == destination_node:
@@ -336,18 +335,18 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
                 # graphics
                 traversed_list.append(new_path.copy())
                 visited_list.append(translate_visited_to_visited_list(visited=visited))
-                title = "Depth First Search: Path Found at " + str(new_path)
-                titles_list.append(title)
+                title = "Path Found at " + str(new_path)
+                labels_list.append(title)
 
-                return True, traversed_list, visited_list, titles_list
+                return "Depth First Search: ", True, traversed_list, visited_list, labels_list
             
         else:
             # graphics
             path = stack.pop(-1)
             traversed_list.append(path)
             visited_list.append(translate_visited_to_visited_list(visited=visited))
-            title = "Depth First Search: No Neighbors Found"
-            titles_list.append(title)
+            title = "No Neighbors Found"
+            labels_list.append(title)
 
     # if destination not found, return path not found 
     print("No Valid Path from", starting_node, "to", destination_node)
@@ -355,13 +354,13 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
     # graphics
     traversed_list.append(path.copy())
     visited_list.append(translate_visited_to_visited_list(visited=visited))
-    title = "Depth First Search: No Path Found"
-    titles_list.append(title)
+    title = "No Path Found"
+    labels_list.append(title)
 
-    return False, traversed_list, visited_list, titles_list
+    return "Depth First Search: ", False, traversed_list, visited_list, labels_list
 
 # DEPTH FIRST SEARCH RECURSIVE HELPER
-def find_depthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, stack:list[list], visited:list[bool], traversed_list:list[list], visited_list:list[list], titles_list:list[str]):
+def find_depthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destination_node:int, stack:list[list], visited:list[bool], traversed_list:list[list], visited_list:list[list], labels_list:list[str]):
     """ recursive function used in find_depthfirstsearch_path_recursively
 
         * graph:nx.Graph - graph to find path
@@ -372,7 +371,7 @@ def find_depthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destin
         * visited:list[bool] - list of boolean values indicating whether a node is visited
         * traversed_list:list[list] - list of lists of traversed nodes for graphics
         * visited_list:list[list] - list of lists of visited nodes for graphics
-        * titles_list:list[str] - list of strings of titles for graphics
+        * labels_list:list[str] - list of strings of titles for graphics
 
     """
     print("Calling Breadth First Search Recursive Helper")
@@ -387,8 +386,8 @@ def find_depthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destin
         # graphics
         traversed_list.append(path.copy())
         visited_list.append(translate_visited_to_visited_list(visited=visited))
-        title = "Depth First Search: Checking Neighbors of Node " + str(current_node)
-        titles_list.append(title)
+        title = "Checking Neighbors of Node " + str(current_node)
+        labels_list.append(title)
 
         # check if unvisited neighbor exists
         neighbors = sorted(graph.neighbors(current_node))
@@ -408,8 +407,8 @@ def find_depthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destin
             # graphics
             traversed_list.append(new_path.copy())
             visited_list.append(translate_visited_to_visited_list(visited=visited))
-            title = "Depth First Search: Neighbor Node " + str(neighbor_node) + " Visited"
-            titles_list.append(title)
+            title = "Neighbor Node " + str(neighbor_node) + " Visited"
+            labels_list.append(title)
 
             # if node at end of path is destination, return path found
             if neighbor_node == destination_node:
@@ -419,20 +418,20 @@ def find_depthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destin
                 # graphics
                 traversed_list.append(new_path.copy())
                 visited_list.append(translate_visited_to_visited_list(visited=visited))
-                title = "Depth First Search: Path Found at " + str(new_path)
-                titles_list.append(title)
+                title = "Path Found at " + str(new_path)
+                labels_list.append(title)
 
-                return True, traversed_list, visited_list, titles_list
+                return "Depth First Search: ", True, traversed_list, visited_list, labels_list
             
         else:
             # graphics
             path = stack.pop(-1)
             traversed_list.append(path)
             visited_list.append(translate_visited_to_visited_list(visited=visited))
-            title = "Depth First Search: No Neighbors Found"
-            titles_list.append(title)
+            title = "No Neighbors Found"
+            labels_list.append(title)
         
-        return find_depthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, stack=stack, visited=visited, traversed_list=traversed_list, visited_list=visited_list, titles_list=titles_list)
+        return find_depthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, stack=stack, visited=visited, traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list)
 
     else: 
         # if destination not found, return path not found 
@@ -441,15 +440,15 @@ def find_depthfirstsearch_path_recurse(graph:nx.Graph, starting_node:int, destin
         # graphics
         traversed_list.append(path.copy())
         visited_list.append(translate_visited_to_visited_list(visited=visited))
-        title = "Depth First Search: No Path Found"
-        titles_list.append(title)
+        title = "No Path Found"
+        labels_list.append(title)
 
-        return False, traversed_list, visited_list, titles_list
+        return "Depth First Search: ", False, traversed_list, visited_list, labels_list
 
 # DEPTH FIRST SEARCH RECURSIVE ALGORITHM
 def find_depthfirstsearch_path_recursively(graph:nx.Graph, starting_node:int, destination_node:int, num_nodes:int):
     """ finds shortest path in the graph between the starting node and the destination node using depth first search recursively
-        returns bool, traversed_list, visited_list, titles_list indicating if the path is found and lists used for graphics
+        returns bool, traversed_list, visited_list, labels_list indicating if the path is found and lists used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the starting node
@@ -471,16 +470,16 @@ def find_depthfirstsearch_path_recursively(graph:nx.Graph, starting_node:int, de
     visited = initialize_visited(num_nodes=num_nodes)
     visited[node_to_index(starting_node)] = True
 
-    # list of all traversed paths, visited paths, and titles for graphics
+    # list of all traversed paths, visited paths, and labels for graphics
     traversed_list = []
     traversed_list.append(path.copy())
     visited_list = []
     visited_list.append(translate_visited_to_visited_list(visited=visited))
-    title = "Depth First Search: Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
-    titles_list = []
-    titles_list.append(title)
+    title = "Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
+    labels_list = []
+    labels_list.append(title)
 
-    return find_depthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, stack=stack, visited=visited, traversed_list=traversed_list, visited_list=visited_list, titles_list=titles_list)
+    return find_depthfirstsearch_path_recurse(graph=graph, starting_node=starting_node, destination_node=destination_node, stack=stack, visited=visited, traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list)
 
 
 # GENERATE RANDOM NODE
@@ -609,7 +608,7 @@ def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, de
     print("Destination Node:", destination_node)
 
     # run search algorithm
-    path_found, traversed_list, visited_list, titles = function(graph=graph, starting_node=starting_node, destination_node=destination_node, num_nodes=num_nodes)
+    title, path_found, traversed_list, visited_list, labels_list = function(graph=graph, starting_node=starting_node, destination_node=destination_node, num_nodes=num_nodes)
 
     pos = nx.spring_layout(G=graph)
     fig, ax = plt.subplots()
@@ -621,7 +620,7 @@ def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, de
         path_nodes = traversed_list[frame]
         path_edges = [(path_nodes[i], path_nodes[i + 1]) for i in range(len(path_nodes) - 1)] if len(path_nodes) > 1 else []
         visited_nodes = visited_list[frame]
-        title = titles[frame]
+        label = labels_list[frame]
 
         # background frame
         nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=graph.edges(), edge_color="black", width=1)
@@ -640,15 +639,43 @@ def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, de
         # labels frame
         nx.draw_networkx_labels(G=graph, pos=pos, ax=ax, font_color="black")
         
-        ax.set_title(title)
+        font = {'fontname':"Trebuchet MS"}
+        ax.set_title(title, **font)
+        ax.set_xlabel(label, **font)
 
     ani = animation.FuncAnimation(fig=fig, func=update, frames=len(traversed_list), interval=1200, repeat=True, repeat_delay=1200)
     plt.show()
 
-# set up and call animation function
-num_nodes = 8
-num_edges = random.randrange(start=0, stop=get_maximum_number_edges(num_nodes) + 1)
-starting_node = 1
-destination_node = num_nodes
+# ANIMATE BREADTH FIRST SERARCH
+def animate_breadth_first_search(num_nodes:int):
+    """ animates breadth first search algorithm
 
-generate_graph_animation(num_nodes=num_nodes, num_edges=num_edges, starting_node=starting_node, destination_node=destination_node, function=find_depthfirstsearch_path_recursively)
+        * num_nodes:int - number of nodes in graph
+
+    """
+    print("Calling Generate Breadth First Search Animation")
+
+    num_edges = random.randrange(start=0, stop=get_maximum_number_edges(num_nodes) + 1)
+    starting_node = 1
+    destination_node = num_nodes
+
+    generate_graph_animation(num_nodes=num_nodes, num_edges=num_edges, starting_node=starting_node, destination_node=destination_node, function=find_breadthfirstsearch_path)
+
+# ANIMATE DEPTH FIRST SERARCH
+def animate_breadth_first_search(num_nodes:int):
+    """ animates depth first search algorithm
+
+        * num_nodes:int - number of nodes in graph
+
+    """
+    print("Calling Generate Depth First Search Animation")
+
+    num_edges = random.randrange(start=0, stop=get_maximum_number_edges(num_nodes) + 1)
+    starting_node = 1
+    destination_node = num_nodes
+
+    generate_graph_animation(num_nodes=num_nodes, num_edges=num_edges, starting_node=starting_node, destination_node=destination_node, function=find_depthfirstsearch_path)
+
+# call animation functions
+animate_breadth_first_search(num_nodes=8)
+animate_breadth_first_search(num_nodes=8)

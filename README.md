@@ -1,7 +1,16 @@
-# Python Graph Algorithms
+# Basic Graph Algorithm Animations
 
 ## OVERVIEW
 
+This Python program generates animations for Breadth First Search and Depth First Search. The program is able to generate a random graph with a specified number of nodes, run Breadth First Search and Depth First Search on the random graph, and animate the algorithm.
+
+**Breadth First Search**
+
+![Alt Text](BreadthFirstSearch.gif)
+
+**Depth First Search**
+
+![Alt Text](DepthFirstSearch.gif)
 
 ## LIBRARIES/REQUIREMENTS
 
@@ -99,7 +108,7 @@ breadth_first_search(graph, starting_node, destination node, num_nodes) {
         }
 
     }
-    
+
     return path not found
 
 }
