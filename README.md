@@ -6,11 +6,11 @@ This Python program generates animations for Breadth First Search and Depth Firs
 
 **Breadth First Search**
 
-![Alt Text](BreadthFirstSearch.gif)
+![Alt Text](files/BreadthFirstSearch.gif)
 
 **Depth First Search**
 
-![Alt Text](DepthFirstSearch.gif)
+![Alt Text](files/DepthFirstSearch.gif)
 
 ## LIBRARIES/REQUIREMENTS
 
