@@ -77,7 +77,7 @@ pip freeze > requirements.txt
 
 pseudocode: 
 ```pseudo
-breadth_first_search(graph, starting_node, destination node, num_nodes) {
+breadth_first_search(graph, starting_node, destination node) {
     let path be a list
     add starting_node to path
 
@@ -88,21 +88,19 @@ breadth_first_search(graph, starting_node, destination node, num_nodes) {
     mark starting_node as visited
 
     while queue not empty {
-        pop queue and set path to the first entry in queue
+        pop queue
+        set path to the first entry in queue
         let current_node be the last node in path
 
-        for neighbors neighbor_node of current_node in graph {
+        for unvisited neighbor_nodes of current_node in graph {
 
-            if neighbor_node not visited {
-                mark neighbor_node as visited
-                let new_path be a copy of path
-                add neighbor_node to new_path
-                add new_path to queue
+            mark neighbor_node as visited
+            let new_path be a copy of path
+            add neighbor_node to new_path
+            add new_path to queue
 
-                if current_node is destination node {
-                    return path
-                }
-
+            if current_node is destination node {
+                return path
             }
 
         }
@@ -120,7 +118,7 @@ breadth_first_search(graph, starting_node, destination node, num_nodes) {
 
 pseudocode: 
 ```pseudo
-breadth_first_search(graph, starting_node, destination node, num_nodes) {
+breadth_first_search(graph, starting_node, destination node) {
     let path be a list
     add starting_node to path
 
@@ -134,9 +132,7 @@ breadth_first_search(graph, starting_node, destination node, num_nodes) {
         set path to the last entry in stack
         let current_node be the last node in path
 
-        set neighbor_node to neighboring, unvisited node of current_node
-
-        if neighbor_node exists {
+        if unvisited neighbor_node of current node exists in graph {
 
             mark neighbor_node as visited
             let new_path be a copy of path
