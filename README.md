@@ -2,7 +2,9 @@
 
 ## OVERVIEW
 
-This Python program generates animations for Breadth First Search and Depth First Search. The program creates a graph, runs Breadth First Search and Depth First Search on the graph, and animates the algorithm.
+This Python program generates animations for graph algorithms. The program creates a graph, runs the algorithm on the graph, and animates the algorithm.
+
+### SEARCHING ALGORITHMS
 
 **Breadth First Search**
 
@@ -11,6 +13,12 @@ This Python program generates animations for Breadth First Search and Depth Firs
 **Depth First Search**
 
 ![Alt Text](files/DepthFirstSearch.gif)
+
+### SINGLE SOURCE SHORTEST PATH ALGORITHMS
+
+**Dijkstra's Algorithm**
+
+![Alt Text](files/Dijkstra'sAlgorithm.gif)
 
 ## LIBRARIES/REQUIREMENTS
 
@@ -168,7 +176,7 @@ breadth_first_search(graph, starting_node, destination node) {
 
 **Dijkstra's Algorithm***
 - graph algorithm to find the SSSP
-- must run on a connected graph
+- must run on a weighted, connected graph with no negative edge weights
 
 pseudocode:
 ```pseudo
