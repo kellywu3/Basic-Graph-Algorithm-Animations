@@ -9,8 +9,8 @@ random.seed(4)
 
 # BREADTH FIRST SEARCH ALGORITHM
 def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_node:int):
-    """ finds shortest path in the graph between the starting node and the destination node using breadth first search
-        returns bool, traversed_list, visited_list, labels_list indicating if the path is found and lists used for graphics
+    """ finds path in the graph between the starting node and the destination node using breadth first search
+        returns title, traversed_list, visited_list, labels_list used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the starting node
@@ -36,7 +36,7 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
     traversed_list.append(path.copy())
     visited_list = []
     visited_list.append(visited.copy())
-    label = "Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
+    label = "Finding Path From Node " + str(starting_node) + " to Node " + str(destination_node)
     labels_list = []
     labels_list.append(label)
 
@@ -84,7 +84,7 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
 
                 # if node at end of path is destination, return path found
                 if neighbor_node == destination_node:
-                    print("Valid Path from ", starting_node, "to", destination_node)
+                    print("Valid Path From ", starting_node, "to", destination_node)
                     print("Path:", new_path)
 
                     # graphics
@@ -93,7 +93,7 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
                     label = "Path Found at " + str(new_path)
                     labels_list.append(label)
 
-                    return "Breadth First Search: ", True, traversed_list, visited_list, labels_list
+                    return "Breadth First Search: ", traversed_list, visited_list, labels_list
                     
                 # graphics
                 traversed_list.append(path.copy())
@@ -109,7 +109,7 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
                     labels_list.append(label)
 
     # if destination not found, return path not found 
-    print("No Valid Path from", starting_node, "to", destination_node)
+    print("No Valid Path From", starting_node, "to", destination_node)
 
     # graphics
     traversed_list.append(path.copy())
@@ -117,12 +117,12 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
     label = "No Path Found"
     labels_list.append(label)
 
-    return "Breadth First Search: ", False, traversed_list, visited_list, labels_list
+    return "Breadth First Search: ", traversed_list, visited_list, labels_list
 
 # DEPTH FIRST SEARCH ALGORITHM
 def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_node:int):
-    """ finds shortest path in the graph between the starting node and the destination node using depth first search
-        returns bool, traversed_list, visited_list, labels_list indicating if the path is found and lists used for graphics
+    """ finds path in the graph between the starting node and the destination node using depth first search
+        returns title, traversed_list, visited_list, labels_list used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the starting node
@@ -148,7 +148,7 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
     traversed_list.append(path.copy())
     visited_list = []
     visited_list.append(visited.copy())
-    label = "Finding Path from Node " + str(starting_node) + " to Node " + str(destination_node)
+    label = "Finding Path From Node " + str(starting_node) + " to Node " + str(destination_node)
     labels_list = []
     labels_list.append(label)
 
@@ -189,7 +189,7 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
 
             # if node at end of path is destination, return path found
             if neighbor_node == destination_node:
-                print("Valid Path from ", starting_node, "to", destination_node)
+                print("Valid Path From ", starting_node, "to", destination_node)
                 print("Path:", new_path)
 
                 # graphics
@@ -198,7 +198,7 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
                 label = "Path Found at " + str(new_path)
                 labels_list.append(label)
 
-                return "Depth First Search: ", True, traversed_list, visited_list, labels_list
+                return "Depth First Search: ", traversed_list, visited_list, labels_list
             
         else:
             # graphics
@@ -209,7 +209,7 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
             labels_list.append(label)
 
     # if destination not found, return path not found 
-    print("No Valid Path from", starting_node, "to", destination_node)
+    print("No Valid Path From", starting_node, "to", destination_node)
 
     # graphics
     traversed_list.append(path.copy())
@@ -217,33 +217,62 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
     label = "No Path Found"
     labels_list.append(label)
 
-    return "Depth First Search: ", False, traversed_list, visited_list, labels_list
+    return "Depth First Search: ", traversed_list, visited_list, labels_list
 
-# GENERATE RANDOM NODE
-def generate_random_node(num_nodes:int):
-    """ generates random node index for nodes in graph with num_nodes nodes
+# DIJKSTRA'S ALGORITHM
+def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
+    """ finds shortest path in the graph between all nodes using dikstra's algorithm
+        returns 
 
+        * graph:nx.Graph - graph to find path
+        * starting_node:int - index of the first graph node
         * num_nodes:int - number of nodes in graph
 
     """
-    print("Calling Generate Random Node")
+    print("Calling Dijkstra's Algorithm")
 
-    node = random.randrange(start=1, stop=num_nodes + 1)
-    print("Random Node:", node)
-    return node
+    # final sssp
+    sssp = []
 
-# GENERATE NODES
-def generate_nodes(num_nodes:int):
-    """ generates list of nodes for graph with num_nodes
+    # list of distances from starting node to all nodes
+    distances = {i:np.inf for i in range(1, num_nodes + 1)}
+    distances[starting_node] = 0
 
-        * num_nodes:int - number of nodes in graph
+    # list of all traversed paths, visited paths, and labels for graphics
+    sssp_list = []
+    sssp_list.append(sssp.copy())
+    neighbors_list = []
+    neighbors_list.append(sssp.copy())
+    label = "Finding SSSP From Node " + str(starting_node)
+    labels_list = []
+    labels_list.append(label)
 
-    """
-    print("Calling Generate Nodes")
+    # while sssp doesn't include all nodes
+    while len(sssp) < num_nodes:
+        non_sssp_distances = {i:distances[i] for i in range(1, num_nodes + 1) if i not in sssp}
+        minimum_distance_node = min(non_sssp_distances, key=non_sssp_distances.get)
+        sssp.append(minimum_distance_node)
 
-    nodes = [i for i in range(1, num_nodes + 1)]
-    print("Nodes:", nodes)
-    return nodes
+        # graphics
+        sssp_list.append(sssp.copy())
+        neighbors_list.append(sssp.copy())
+        label = "Node " + str(starting_node) + " With Minimum Distance " + str(distances[minimum_distance_node]) + " Added to SSSP"
+        labels_list.append(label)
+
+        for node in sssp:
+            for neighbor_node in graph.neighbors(node):
+                distances[neighbor_node] = min(distances[neighbor_node], distances[node] + graph.get_edge_data(node, neighbor_node)['weight'])
+        
+    print("Valid SSSP From ", starting_node)
+    print("SSSP:", sssp)
+
+    # graphics
+    sssp_list.append(sssp.copy())
+    neighbors_list.append(sssp.copy())
+    label = "SSSP Found at " + str(sssp)
+    labels_list.append(label)
+
+    return "Dijkstra's Algorithm: ", sssp_list, neighbors_list, labels_list
 
 # GET MAXIMUM NUMBER EDGES
 def get_maximum_number_edges(num_nodes:int):
@@ -258,45 +287,9 @@ def get_maximum_number_edges(num_nodes:int):
     print("Maximum Number Edges:", max_num_edges)
     return max_num_edges
 
-# GENERATE RANDOM EDGE
-def generate_random_edge(num_nodes:int):
-    """ helper function used in generate_random_edges
-
-        * num_nodes:int - number of nodes in graph
-
-    """
-    print("Calling Generate Random Edge")
-
-    edge = (random.randrange(1, num_nodes + 1), random.randrange(1, num_nodes + 1))
-    print("Random Edge:", edge)
-    return edge
-
-# GENERATE RANDOM EDGES
-def generate_random_edges(num_nodes:int, num_edges:int):
-    """ generates list of random edges for graph with num_nodes nodes and num_edges edges
-
-        * num_nodes:int - number of nodes in graph
-        * num_edges:int - number of edges in graph
-
-    """
-    print("Calling Generate Random Edges")
-
-    edges = []
-
-    for i in range(num_edges):
-        edge = generate_random_edge(num_nodes=num_nodes)
-
-        while (edge in edges) or (edge[0] == edge[1]):
-            edge = generate_random_edge(num_nodes=num_nodes)
-
-        edges.append(edge)
-
-    print("Random Edges:", edges)
-    return edges
-
-# GENERATE GRAPH
-def generate_graph(nodes:list[int], edges:list[tuple]):
-    """ generates graph with given nodes and edges
+# GENERATE UNWEIGHTED GRAPH
+def generate_unweighted_graph(nodes:list[int], edges:list[tuple]):
+    """ generates unweighted graph with given nodes and edges
 
         * nodes:list[int] - list of nodes to add to graph
         * edges:list[tuple] - list of edges to add to graph
@@ -320,32 +313,56 @@ def generate_graph(nodes:list[int], edges:list[tuple]):
 
     return graph
 
-# GENERATE GRAPH ANIMATION
-def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, destination_node:int, function:callable):
-    """ generates graph with num_nodes nodes and num_edges edges, finds path from starting_node to destination_node, and animates process
+# GENERATE WEIGHTED GRAPH
+def generate_weighted_graph(nodes:list[int], edges:list[tuple]):
+    """ generates weighted graph with given nodes and edges
 
-        * num_nodes:int - number of nodes in graph
-        * num_edges:int - number of edges in graph
-        * starting_node:int - index of the starting node
-        * destination_node:int - index of the destination node
+        * nodes:list[int] - list of nodes to add to graph
+        * edges:list[tuple] - list of edges to add to graph
 
     """
-    print("Calling Generate Graph Animation")
+    print("Calling Generate Graph")
+
+    graph = nx.Graph()
+    print("Number of Nodes:", len(nodes))
+    print("Number of Edges:", len(edges))
+
+    # add nodes [1, number_nodes] to graph
+    graph.add_nodes_from(nodes_for_adding=nodes)
+    print("Number of Nodes Added:", graph.number_of_nodes())
+    print("Nodes in Graph:", graph.nodes())
+
+    # add edges [1, number_edges] to graph
+    graph.add_weighted_edges_from(ebunch_to_add=edges)
+    print("Number of Edges Added:", graph.number_of_edges())
+    print("Edges in Graph:", graph.edges())
+
+    return graph
+
+# GENERATE GRAPH SEARCH ANIMATION
+def generate_graph_search_animation(function:callable):
+    """ generates graph, finds path from starting_node to destination_node, and animates process
+
+        * function:callable - search algorithm to animate
+
+    """
+    print("Calling Generate Graph Search Animation")
 
     # generate nodes, random edges, and graph
-    nodes = generate_nodes(num_nodes=num_nodes)
-    print(num_nodes, "Nodes Generated")
+    num_nodes = 8
+    starting_node = 1
+    destination_node = num_nodes
 
-    edges = generate_random_edges(num_nodes=num_nodes, num_edges=num_edges)
-    print(num_edges, "Edges Generated")
+    nodes = [i for i in range(1, num_nodes + 1)]
+    print(len(nodes), "Nodes Generated")
 
-    graph = generate_graph(nodes=nodes, edges=edges)
-    print("Graph with", len(nodes), "Nodes and", len(edges), "Edges Generated")
-    print("Starting Node:", starting_node)
-    print("Destination Node:", destination_node)
+    edges = [(1, 4), (1, 2), (2, 3), (2, 5), (5, 6), (5, 7), (7, 8)]
+    print(len(edges), "Edges Generated")
+
+    graph = generate_unweighted_graph(nodes=nodes, edges=edges)
 
     # run search algorithm
-    title, path_found, traversed_list, visited_list, labels_list = function(graph=graph, starting_node=starting_node, destination_node=destination_node)
+    title, traversed_list, visited_list, labels_list = function(graph=graph, starting_node=starting_node, destination_node=destination_node)
 
     pos = nx.spring_layout(G=graph)
     fig, ax = plt.subplots()
@@ -380,36 +397,66 @@ def generate_graph_animation(num_nodes:int, num_edges:int, starting_node:int, de
     ani = animation.FuncAnimation(fig=fig, func=update, frames=len(traversed_list), interval=1200, repeat=True, repeat_delay=1200)
     plt.show()
 
-# ANIMATE BREADTH FIRST SERARCH
-def animate_breadth_first_search(num_nodes:int):
-    """ animates breadth first search algorithm
+# GENERATE GRAPH SSSP ANIMATION
+def generate_graph_sssp_animation(function:callable):
+    """ generates graph, finds path from sssp, and animates process
 
-        * num_nodes:int - number of nodes in graph
+        * function:callable - search algorithm to animate
 
     """
-    print("Calling Generate Breadth First Search Animation")
+    print("Calling Generate Graph SSSP Animation")
 
-    num_edges = random.randrange(start=0, stop=get_maximum_number_edges(num_nodes) + 1)
+    # generate nodes, random edges, and graph
+    num_nodes = 8
     starting_node = 1
     destination_node = num_nodes
 
-    generate_graph_animation(num_nodes=num_nodes, num_edges=num_edges, starting_node=starting_node, destination_node=destination_node, function=find_breadthfirstsearch_path)
+    nodes = [i for i in range(1, num_nodes + 1)]
+    print(len(nodes), "Nodes Generated")
 
-# ANIMATE DEPTH FIRST SERARCH
-def animate_depth_first_search(num_nodes:int):
-    """ animates depth first search algorithm
+    edges = [(1, 2, 8), (1, 7, 8), (2, 3, 7), (2, 5, 4), (2, 8, 2), (7, 8, 7), (7, 6, 1), (3, 4, 9), (3, 5, 14), (4, 5, 10), (5, 6, 2), (6, 8, 6)]
+    print(len(edges), "Edges Generated")
 
-        * num_nodes:int - number of nodes in graph
+    graph = generate_weighted_graph(nodes=nodes, edges=edges)
 
-    """
-    print("Calling Generate Depth First Search Animation")
+    # run sssp algorithm
+    title, sssp_list, neighbors_list, labels_list = function(graph=graph, starting_node=starting_node, num_nodes=num_nodes)
 
-    num_edges = random.randrange(start=0, stop=get_maximum_number_edges(num_nodes) + 1)
-    starting_node = 1
-    destination_node = num_nodes
+    pos = nx.spring_layout(G=graph)
+    fig, ax = plt.subplots()
 
-    generate_graph_animation(num_nodes=num_nodes, num_edges=num_edges, starting_node=starting_node, destination_node=destination_node, function=find_depthfirstsearch_path)
+    # update function used to iterate through animation
+    def update(frame:int):
+        ax.clear()
+
+        sssp_nodes = sssp_list[frame]
+        sssp_edges = [(sssp_nodes[i], sssp_nodes[i + 1]) for i in range(len(sssp_nodes) - 1)] if len(sssp_nodes) > 1 else []
+        neighbor_nodes = neighbors_list[frame]
+        label = labels_list[frame]
+
+        # background frame
+        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=graph.edges(), edge_color="black", width=1)
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=graph.nodes(), node_color="white", edgecolors="black", node_size=400, linewidths=1)
+
+        # visited nodes frame
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=neighbor_nodes, node_color="grey", edgecolors="black", node_size=450, linewidths=1)
+
+        # animation nodes frame
+        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=sssp_edges, edge_color="yellow", width=2)
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=sssp_nodes, node_color="yellow", edgecolors="black", node_size=450, linewidths=2)
+
+        # labels frame
+        nx.draw_networkx_labels(G=graph, pos=pos, ax=ax, font_color="black")
+        
+        font = {'fontname':"Trebuchet MS"}
+        ax.set_title(title, **font)
+        ax.set_xlabel(label, **font)
+
+    ani = animation.FuncAnimation(fig=fig, func=update, frames=len(sssp_list), interval=1200, repeat=True, repeat_delay=1200)
+    plt.show()
 
 # call animation functions
-animate_breadth_first_search(num_nodes=8)
-animate_depth_first_search(num_nodes=8)
+# generate_graph_search_animation(function=find_breadthfirstsearch_path)
+# generate_graph_search_animation(function=find_depthfirstsearch_path)
+
+generate_graph_sssp_animation(function=find_dijkstra_path)

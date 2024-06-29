@@ -1,8 +1,8 @@
-# Basic Graph Algorithm Animations
+# Graph Algorithm Animations
 
 ## OVERVIEW
 
-This Python program generates animations for Breadth First Search and Depth First Search. The program is able to generate a random graph with a specified number of nodes, run Breadth First Search and Depth First Search on the random graph, and animate the algorithm.
+This Python program generates animations for Breadth First Search and Depth First Search. The program creates a graph, runs Breadth First Search and Depth First Search on the graph, and animates the algorithm.
 
 **Breadth First Search**
 
@@ -71,13 +71,18 @@ pip freeze > requirements.txt
 
 ## CONCEPTS
 
+### Searching Algorithms
+
+- search for specific nodes from a starting node
+
 **Breadth First Search**
-- graph traversal algorithm to search for specific nodes from a starting node
+- graph traversal searching algorithm
 - uses a queue to search graphs breadth first
 
 pseudocode: 
 ```pseudo
 breadth_first_search(graph, starting_node, destination node) {
+
     let path be a list
     add starting_node to path
 
@@ -88,11 +93,12 @@ breadth_first_search(graph, starting_node, destination node) {
     mark starting_node as visited
 
     while queue not empty {
+
         pop queue
         set path to the first entry in queue
         let current_node be the last node in path
 
-        for unvisited neighbor_nodes of current_node in graph {
+        for each unvisited neighbor_node of current_node in graph {
 
             mark neighbor_node as visited
             let new_path be a copy of path
@@ -113,12 +119,13 @@ breadth_first_search(graph, starting_node, destination node) {
 ```
 
 **Depth First Search**
-- graph traversal algorithm to search for specific nodes from a starting node
+- graph traversal searching algorithm
 - uses a stack to search graphs depth first
 
 pseudocode: 
 ```pseudo
 breadth_first_search(graph, starting_node, destination node) {
+
     let path be a list
     add starting_node to path
 
@@ -129,10 +136,11 @@ breadth_first_search(graph, starting_node, destination node) {
     mark starting_node as visited
 
     while stack not empty {
+
         set path to the last entry in stack
         let current_node be the last node in path
 
-        if unvisited neighbor_node of current node exists in graph {
+        if an unvisited neighbor_node of current node exists in graph {
 
             mark neighbor_node as visited
             let new_path be a copy of path
@@ -150,6 +158,35 @@ breadth_first_search(graph, starting_node, destination node) {
     }
 
     return path not found
+
+}
+```
+
+### Single Source Shortest Path Algorithms
+
+- path containing the shortest paths to all nodes in the graph from a starting node
+
+**Dijkstra's Algorithm***
+- graph algorithm to find the SSSP
+- must run on a connected graph
+
+pseudocode:
+```pseudo
+dijkstras(graph, starting_node) {
+
+    let sssp be a list
+    let distances be a dict
+    assign 0 to distances at the starting node
+    assign infinity to distances at all other nodes
+
+    while sssp doesn't include all nodes {
+
+        let minimum_distance_node be a node not in SSSP with the minimum distance from SSSP
+        update distances of all adjacent vertices to be the distance from the source to the adjacent vertex
+
+    }
+
+    return SSSP
 
 }
 ```
