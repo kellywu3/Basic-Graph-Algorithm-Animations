@@ -7,6 +7,24 @@ import logging
 
 random.seed(4)
 
+# UPDATE SEARCH ALGORITHM GRAPHICS
+def update_search_algorithm_graphics(traversed_list:list[list], visited_list:list[list], labels_list:list[str], path:list[int], visited:list[int], label:str):
+    """ updates graphical information for search algorithms
+
+        * traversed_list:list[list] - list of lists of traversed nodes
+        * visited_list:list[list] - list of lists of visited nodes
+        * labels_list:list[str] - list of strings of labels
+        * path:list[int] - traversed nodes list to be added to traversed_list
+        * visited:list[int] - visited nodes list to be added to visited_list
+        * label:str - label to be added to labels
+
+    """
+    print("Calling Update Search Algorithm Graphics")
+
+    traversed_list.append(path.copy())
+    visited_list.append(visited.copy())
+    labels_list.append(label)
+
 # BREADTH FIRST SEARCH ALGORITHM
 def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_node:int):
     """ finds path in the graph between the starting node and the destination node using breadth first search
@@ -33,12 +51,10 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
 
     # list of all traversed paths, visited paths, and labels for graphics
     traversed_list = []
-    traversed_list.append(path.copy())
     visited_list = []
-    visited_list.append(visited.copy())
-    label = "Finding Path From Node " + str(starting_node) + " to Node " + str(destination_node)
     labels_list = []
-    labels_list.append(label)
+    label = "Finding Path From Node " + str(starting_node) + " to Node " + str(destination_node)
+    update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     # while queue not empty, check each path in queue
     while len(queue) > 0:
@@ -49,10 +65,8 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
         current_node = path[-1]
 
         # graphics
-        traversed_list.append(path.copy())
-        visited_list.append(visited.copy())
         label = "Checking Neighbors of Node " + str(current_node)
-        labels_list.append(label)
+        update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
         # check each neighbor
         neighbors = sorted(graph.neighbors(current_node))
@@ -63,10 +77,8 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
 
         # graphics
         if len(neighbor_nodes) == 0:
-            traversed_list.append(path.copy())
-            visited_list.append(visited.copy())
             label = "No Neighbors Found"
-            labels_list.append(label)
+            update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
         else:
             for neighbor_node in neighbor_nodes:
@@ -77,10 +89,8 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
                 queue.append(new_path.copy())
 
                 # graphics
-                traversed_list.append(new_path.copy())
-                visited_list.append(visited.copy())
                 label = "Neighbor Node " + str(neighbor_node) + " Visited"
-                labels_list.append(label)
+                update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=new_path, visited=visited, label=label)
 
                 # if node at end of path is destination, return path found
                 if neighbor_node == destination_node:
@@ -88,34 +98,26 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
                     print("Path:", new_path)
 
                     # graphics
-                    traversed_list.append(new_path.copy())
-                    visited_list.append(visited.copy())
                     label = "Path Found at " + str(new_path)
-                    labels_list.append(label)
+                    update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=new_path, visited=visited, label=label)
 
                     return "Breadth First Search: ", traversed_list, visited_list, labels_list
                     
                 # graphics
-                traversed_list.append(path.copy())
-                visited_list.append(visited.copy())
                 label = "Checking Neighbors of Node " + str(current_node)
-                labels_list.append(label)
+                update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
                 # graphics
                 if neighbor_node == neighbor_nodes[len(neighbor_nodes) - 1]:
-                    traversed_list.append(path.copy())
-                    visited_list.append(visited.copy())
                     label = "No Neighbors Found"
-                    labels_list.append(label)
+                    update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     # if destination not found, return path not found 
     print("No Valid Path From", starting_node, "to", destination_node)
 
     # graphics
-    traversed_list.append(path.copy())
-    visited_list.append(visited.copy())
     label = "No Path Found"
-    labels_list.append(label)
+    update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     return "Breadth First Search: ", traversed_list, visited_list, labels_list
 
@@ -145,12 +147,10 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
 
     # list of all traversed paths, visited paths, and labels for graphics
     traversed_list = []
-    traversed_list.append(path.copy())
     visited_list = []
-    visited_list.append(visited.copy())
     label = "Finding Path From Node " + str(starting_node) + " to Node " + str(destination_node)
     labels_list = []
-    labels_list.append(label)
+    update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     # while stack not empty, check each path in queue
     while len(stack) > 0:
@@ -161,10 +161,8 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
         current_node = path[-1]
 
         # graphics
-        traversed_list.append(path.copy())
-        visited_list.append(visited.copy())
         label = "Checking Neighbors of Node " + str(current_node)
-        labels_list.append(label)
+        update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
         # check if unvisited neighbor exists
         neighbors = sorted(graph.neighbors(current_node))
@@ -182,10 +180,8 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
             stack.append(new_path.copy())
 
             # graphics
-            traversed_list.append(new_path.copy())
-            visited_list.append(visited.copy())
             label = "Neighbor Node " + str(neighbor_node) + " Visited"
-            labels_list.append(label)
+            update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=new_path, visited=visited, label=label)
 
             # if node at end of path is destination, return path found
             if neighbor_node == destination_node:
@@ -193,31 +189,65 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
                 print("Path:", new_path)
 
                 # graphics
-                traversed_list.append(new_path.copy())
-                visited_list.append(visited.copy())
                 label = "Path Found at " + str(new_path)
-                labels_list.append(label)
+                update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=new_path, visited=visited, label=label)
 
                 return "Depth First Search: ", traversed_list, visited_list, labels_list
             
         else:
             # graphics
             path = stack.pop(-1)
-            traversed_list.append(path.copy())
-            visited_list.append(visited.copy())
             label = "No Neighbors Found"
-            labels_list.append(label)
+            update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     # if destination not found, return path not found 
     print("No Valid Path From", starting_node, "to", destination_node)
 
     # graphics
-    traversed_list.append(path.copy())
-    visited_list.append(visited.copy())
     label = "No Path Found"
-    labels_list.append(label)
+    update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     return "Depth First Search: ", traversed_list, visited_list, labels_list
+
+# UPDATE SSSP ALGORITHM GRAPHICS
+def update_sssp_algorithm_graphics(sssp_list:list[list], neighbors_list:list[list], edges_list:list[list], labels_list:list[str], sssp:list[int], neighbors:list[int], edges:list[tuple], label:str):
+    """ updates graphical information for search algorithms
+
+        * sssp_list:list[list] - list of lists of sssp nodes
+        * neighbors_list:list[list] - list of list of neighbor nodes
+        * edges_list:list[list] - list of list of edge nodes
+        * labels_list:list[str] - list of strings of labels
+        * sssp:list[int] - sssp nodes list to be added to sssp_list
+        * neighbors:list[int] - neighbor nodes list to be added to neighbors_list
+        * edges:list[tuple] - edge tuples list to be added to edges_list
+        * label:str - label to be added to labels
+
+    """
+    print("Calling Update Search Algorithm Graphics")
+    
+    sssp_list.append(sssp.copy())
+    neighbors_list.append(neighbors.copy())
+    edges_list.append(edges.copy())
+    labels_list.append(label)
+
+# GET SSSP NEIGHBORS
+def get_sssp_neighbors(graph:nx.Graph, sssp:list[int]):
+    """ updates graphical information for search algorithms
+
+        * graph:nx.Graph - graph to find path
+        * sssp:list[int] - sssp nodes list
+
+    """
+    print("Calling Update Search Algorithm Graphics")
+
+    neighbors = []
+
+    for node in sssp:
+        for neighbor in graph.neighbors(node):
+            if neighbor not in neighbors and neighbor not in sssp:
+                neighbors.append(neighbor)
+    
+    return neighbors
 
 # DIJKSTRA'S ALGORITHM
 def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
@@ -234,6 +264,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
     # final sssp
     sssp = []
     edges = []
+    neighbors = []
 
     # list of distances from starting node to all nodes
     distances = {i:np.inf for i in range(1, num_nodes + 1)}
@@ -241,15 +272,11 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
 
     # list of all sssp nodes, sssp edges, neighbor nodes, and labels for graphics
     sssp_list = []
-    sssp_list.append(sssp.copy())
-    neighbors = []
     neighbors_list = []
-    neighbors_list.append(sssp.copy())
     edges_list = []
-    edges_list.append(edges.copy())
     label = "Finding SSSP From Node " + str(starting_node)
     labels_list = []
-    labels_list.append(label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
 
     # local memory used to help graphics
     minimum_distance_neighbor_node = starting_node
@@ -257,16 +284,10 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
     minimum_distance = 0
 
     # graphics
-    sssp_list.append(sssp.copy())
-    for node in sssp:
-        for neighbor in graph.neighbors(node):
-            if neighbor not in neighbors and neighbor not in sssp:
-                neighbors.append(neighbor)
+    neighbors = get_sssp_neighbors(graph=graph, sssp=sssp)
 
-    neighbors_list.append(neighbors.copy())
-    edges_list.append(edges.copy())
     label = "Checking Neighbors of SSSP Nodes " + str(sssp)
-    labels_list.append(label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
 
     # while sssp doesn't include all nodes
     while len(sssp) < num_nodes:        
@@ -274,23 +295,14 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
         sssp.append(minimum_distance_neighbor_node)
 
         # graphics
-        sssp_list.append(sssp.copy())
-        neighbors_list.append(neighbors.copy())
-        edges_list.append(edges.copy())
         label = "Node " + str(minimum_distance_neighbor_node) + " With Distance " + str(minimum_distance) + " From Node " + str(starting_node) + " Added to SSSP"
-        labels_list.append(label)
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
 
         # graphics
-        sssp_list.append(sssp.copy())
-        for node in sssp:
-            for neighbor in graph.neighbors(node):
-                if neighbor not in neighbors and neighbor not in sssp:
-                    neighbors.append(neighbor)
+        neighbors = get_sssp_neighbors(graph=graph, sssp=sssp)
 
-        neighbors_list.append(neighbors.copy())
-        edges_list.append(edges.copy())
         label = "Checking Neighbors of SSSP Nodes " + str(sssp)
-        labels_list.append(label)
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
 
         # get next minimum distance edge
         minimum_distance = np.inf
@@ -314,11 +326,8 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
     print("SSSP Edges:", edges)
 
     # graphics
-    sssp_list.append(sssp.copy())
-    neighbors_list.append(neighbors.copy())
-    edges_list.append(edges.copy())
     label = "SSSP Found With Edges " + str(edges)
-    labels_list.append(label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
 
     return "Dijkstra's Algorithm: ", sssp_list, neighbors_list, edges_list, labels_list
 

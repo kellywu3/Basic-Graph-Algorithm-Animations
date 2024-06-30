@@ -183,7 +183,7 @@ pseudocode:
 dijkstras(graph, starting_node) {
 
     let sssp be a list
-    let distances be a dict
+    let distances be a list
     assign 0 to distances at the starting node
     assign infinity to distances at all other nodes
 
