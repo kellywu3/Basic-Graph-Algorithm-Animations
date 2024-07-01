@@ -20,6 +20,10 @@ This Python program generates animations for graph algorithms. The program creat
 
 ![Alt Text](files/Dijkstra's.gif)
 
+**Bellman-Ford Algorithm**
+
+![Alt Text](files/Bellman-Ford.gif)
+
 ## LIBRARIES/REQUIREMENTS
 
 - [Matplotlib.pyplot](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html)
