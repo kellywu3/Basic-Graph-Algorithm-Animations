@@ -184,7 +184,7 @@ pseudocode:
 dijkstras(graph, starting_node) {
 
     let sssp be a list
-    let distances be a list
+    let distances be a dict
     assign 0 to distances at the starting_node
     assign infinity to distances at all other nodes
 
@@ -203,23 +203,26 @@ dijkstras(graph, starting_node) {
 **Bellman-Ford Algorithm**
 - graph algorithm to find the SSSP
 - must run on a weighted, connected graph with no negative edge cycles
-- dynamic algorithm
+- dynamic programming algorithm
 
 pseudocode:
 ```pseudo
 bellman-ford(graph, starting_node) {
 
     let sssp be a list
-    let distances be a list
+    let distances be a dict
     assign 0 to distances at the starting_node
     assign infinity to distances at all other nodes
 
-    while sssp doesn't include all nodes {
+    for num_nodes iterations {
 
-        relax all edges with nodes neighboring SSSP
-        update distances of all adjacent vertices to be the min(distance stored at vertex, distance from the sssp node to the adjacent vertex)
+        for each edge in graph {
 
-        if the distance from the sssp node to the adjacent vertex is less than the distance stored at vertex, a negative cycle exists
+            update distances of all vertices to be the min(distance stored at vertex, distance of edge + distance stored at vertex)
+
+            in the last iteration, if the distance from the sssp node to the adjacent vertex is less than the distance stored at vertex, a negative cycle exists
+
+        }
 
     }
 

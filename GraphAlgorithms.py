@@ -256,13 +256,12 @@ def get_sssp_neighbors(graph:nx.Graph, sssp:list[int]):
     return neighbors
 
 # DIJKSTRA'S ALGORITHM
-def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
+def find_dijkstra_path(graph:nx.Graph, starting_node:int):
     """ finds shortest path in the graph between all nodes using dikstra's algorithm
-        returns title, sssp_list, neighbors_list, edges_list, labels_list used for graphics
+        returns title, sssp_list, neighbors_list, distances_list, edges_list, labels_list used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the first graph node
-        * num_nodes:int - number of nodes in graph
 
     """
     print("Calling Dijkstra's Algorithm")
@@ -273,7 +272,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
     neighbors = []
 
     # list of distances from starting node to all nodes
-    distances = {i:np.inf for i in range(0, num_nodes)}
+    distances = {i:np.inf for i in range(0, graph.number_of_nodes())}
     distances[starting_node] = 0
 
     # list of all sssp nodes, sssp edges, neighbor nodes, and labels for graphics
@@ -298,7 +297,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
     update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
 
     # while sssp doesn't include all nodes
-    while len(sssp) < num_nodes:        
+    while len(sssp) < graph.number_of_nodes():        
         # get minimum distance node
         sssp.append(minimum_distance_neighbor_node)
 
@@ -339,6 +338,69 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
     update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
 
     return "Dijkstra's Algorithm: ", sssp_list, neighbors_list, distances_list, edges_list, labels_list
+
+# BELLMAN-FORD ALGORITHM
+def find_bellmanford_path(graph:nx.Graph, starting_node:int):
+    """ finds shortest path in the graph between all nodes using bellman-ford algorithm
+        returns title, sssp_list, neighbors_list, distances_list, edges_list, labels_list used for graphics
+
+        * graph:nx.Graph - graph to find path
+        * starting_node:int - index of the first graph node
+
+    """
+    print("Calling Bellman-Ford Algorithm")
+
+    # final sssp
+    sssp = []
+
+    # list of distances from starting node to all nodes
+    edges = [(0, 0) for i in range(0, graph.number_of_nodes())]
+    neighbors = []
+    distances = {i:np.inf for i in range(0, graph.number_of_nodes())}
+    distances[starting_node] = 0
+
+    # list of all sssp nodes, sssp edges, neighbor nodes, and labels for graphics
+    sssp_list = []
+    neighbors_list = []
+    distances_list = []
+    edges_list = []
+    label = "Finding SSSP From Node " + str(starting_node)
+    labels_list = []
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+
+    # while sssp doesn't include all nodes
+    for iteration in range(graph.number_of_nodes()):   
+        # graphics
+        label = "Iteration " + str(iteration)
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+
+        for edge in graph.edges():
+            # graphics
+            label = "Checking Edge " + str(edge)
+            update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+
+            edge_node_u = edge[0]
+            edge_node_v = edge[1]
+            edge_distance = graph.get_edge_data(edge_node_u, edge_node_v)['weight']
+
+            if iteration < graph.number_of_nodes(): 
+                if distances[edge_node_v] + edge_distance < distances[edge_node_u]:
+                    distances[edge_node_u] = distances[edge_node_v] + edge_distance
+                    edges[edge_node_u] = (edge_node_u, edge_node_v)
+                
+                if distances[edge_node_u] + edge_distance < distances[edge_node_v]:
+                    distances[edge_node_v] = distances[edge_node_u] + edge_distance
+                    edges[edge_node_v] = (edge_node_u, edge_node_v)
+        
+    print("Valid SSSP From ", starting_node)
+    print("SSSP:", sssp)
+    print("SSSP Edges:", edges)
+
+    # graphics
+    label = "SSSP Found With Edges " + str(edges)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+
+    return "Bellman-Ford Algorithm: ", sssp_list, neighbors_list, distances_list, edges_list, labels_list
 
 # GENERATE UNWEIGHTED GRAPH
 def generate_unweighted_graph(nodes:list[int], edges:list[tuple]):
@@ -474,7 +536,7 @@ def generate_graph_sssp_animation(function:callable):
     graph = generate_weighted_graph(nodes=nodes, edges=edges)
 
     # run sssp algorithm
-    title, sssp_list, neighbors_list, distances_list, edges_list, labels_list = function(graph=graph, starting_node=starting_node, num_nodes=num_nodes)
+    title, sssp_list, neighbors_list, distances_list, edges_list, labels_list = function(graph=graph, starting_node=starting_node)
 
     pos = nx.spring_layout(G=graph)
     fig, ax = plt.subplots()
@@ -517,7 +579,8 @@ def generate_graph_sssp_animation(function:callable):
 
 # call animation functions
 
-generate_graph_search_animation(function=find_breadthfirstsearch_path)
-generate_graph_search_animation(function=find_depthfirstsearch_path)
+# generate_graph_search_animation(function=find_breadthfirstsearch_path)
+# generate_graph_search_animation(function=find_depthfirstsearch_path)
 
-generate_graph_sssp_animation(function=find_dijkstra_path)
+# generate_graph_sssp_animation(function=find_dijkstra_path)
+generate_graph_sssp_animation(function=find_bellmanford_path)
