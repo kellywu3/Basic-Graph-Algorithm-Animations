@@ -18,7 +18,7 @@ This Python program generates animations for graph algorithms. The program creat
 
 **Dijkstra's Algorithm**
 
-![Alt Text](files/Dijkstra'sAlgorithm.gif)
+![Alt Text](files/Dijkstra's.gif)
 
 ## LIBRARIES/REQUIREMENTS
 
@@ -174,9 +174,10 @@ breadth_first_search(graph, starting_node, destination node) {
 
 - path containing the shortest paths to all nodes in the graph from a starting node
 
-**Dijkstra's Algorithm***
+**Dijkstra's Algorithm**
 - graph algorithm to find the SSSP
 - must run on a weighted, connected graph with no negative edge weights
+- greedy algorithm
 
 pseudocode:
 ```pseudo
@@ -184,13 +185,41 @@ dijkstras(graph, starting_node) {
 
     let sssp be a list
     let distances be a list
-    assign 0 to distances at the starting node
+    assign 0 to distances at the starting_node
     assign infinity to distances at all other nodes
 
     while sssp doesn't include all nodes {
 
         let minimum_distance_node be a node not in SSSP with the minimum distance from SSSP
         update distances of all adjacent vertices to be the distance from the source to the adjacent vertex
+
+    }
+
+    return SSSP
+
+}
+```
+
+**Bellman-Ford Algorithm**
+- graph algorithm to find the SSSP
+- must run on a weighted, connected graph with no negative edge cycles
+- dynamic algorithm
+
+pseudocode:
+```pseudo
+bellman-ford(graph, starting_node) {
+
+    let sssp be a list
+    let distances be a list
+    assign 0 to distances at the starting_node
+    assign infinity to distances at all other nodes
+
+    while sssp doesn't include all nodes {
+
+        relax all edges with nodes neighboring SSSP
+        update distances of all adjacent vertices to be the min(distance stored at vertex, distance from the sssp node to the adjacent vertex)
+
+        if the distance from the sssp node to the adjacent vertex is less than the distance stored at vertex, a negative cycle exists
 
     }
 

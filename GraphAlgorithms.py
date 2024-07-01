@@ -210,23 +210,29 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
     return "Depth First Search: ", traversed_list, visited_list, labels_list
 
 # UPDATE SSSP ALGORITHM GRAPHICS
-def update_sssp_algorithm_graphics(sssp_list:list[list], neighbors_list:list[list], edges_list:list[list], labels_list:list[str], sssp:list[int], neighbors:list[int], edges:list[tuple], label:str):
+def update_sssp_algorithm_graphics(sssp_list:list[list], neighbors_list:list[list], distances_list:list[dict], edges_list:list[list], labels_list:list[str], sssp:list[int], neighbors:list[int], distances:dict, edges:list[tuple], label:str):
     """ updates graphical information for search algorithms
 
         * sssp_list:list[list] - list of lists of sssp nodes
         * neighbors_list:list[list] - list of list of neighbor nodes
+        * distances_list:list[dict] - list of dict of distances from starting node
         * edges_list:list[list] - list of list of edge nodes
         * labels_list:list[str] - list of strings of labels
         * sssp:list[int] - sssp nodes list to be added to sssp_list
         * neighbors:list[int] - neighbor nodes list to be added to neighbors_list
+        * distances:dict - distances dict to be formatted and added to distances_list
         * edges:list[tuple] - edge tuples list to be added to edges_list
         * label:str - label to be added to labels
 
     """
     print("Calling Update Search Algorithm Graphics")
+    distances_formatted = distances.copy()
+    for i in range(len(distances_formatted)):
+        distances_formatted[i] = str(i) + ": " + str(distances[i])
     
     sssp_list.append(sssp.copy())
     neighbors_list.append(neighbors.copy())
+    distances_list.append(distances_formatted.copy())
     edges_list.append(edges.copy())
     labels_list.append(label)
 
@@ -267,27 +273,29 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
     neighbors = []
 
     # list of distances from starting node to all nodes
-    distances = {i:np.inf for i in range(1, num_nodes + 1)}
+    distances = {i:np.inf for i in range(0, num_nodes)}
     distances[starting_node] = 0
 
     # list of all sssp nodes, sssp edges, neighbor nodes, and labels for graphics
     sssp_list = []
     neighbors_list = []
+    distances_list = []
     edges_list = []
     label = "Finding SSSP From Node " + str(starting_node)
     labels_list = []
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
 
     # local memory used to help graphics
     minimum_distance_neighbor_node = starting_node
     minimum_distance_sssp_node = starting_node
     minimum_distance = 0
 
-    # graphics
+    # get neighbors of sssp
     neighbors = get_sssp_neighbors(graph=graph, sssp=sssp)
 
+    # graphics
     label = "Checking Neighbors of SSSP Nodes " + str(sssp)
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
 
     # while sssp doesn't include all nodes
     while len(sssp) < num_nodes:        
@@ -295,14 +303,11 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
         sssp.append(minimum_distance_neighbor_node)
 
         # graphics
-        label = "Node " + str(minimum_distance_neighbor_node) + " With Distance " + str(minimum_distance) + " From Node " + str(starting_node) + " Added to SSSP"
-        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
+        label = "Node " + str(minimum_distance_neighbor_node) + " With Distance " + str(minimum_distance) + " Added to SSSP"
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
 
-        # graphics
+        # get neighbors of sssp
         neighbors = get_sssp_neighbors(graph=graph, sssp=sssp)
-
-        label = "Checking Neighbors of SSSP Nodes " + str(sssp)
-        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
 
         # get next minimum distance edge
         minimum_distance = np.inf
@@ -318,6 +323,10 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
                         minimum_distance = neighbor_distance
                         minimum_distance_sssp_node = sssp_node
                         minimum_distance_neighbor_node = neighbor_node
+
+        # graphics
+        label = "Checking Neighbors of SSSP Nodes " + str(sssp)
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
         
         edges.append((minimum_distance_sssp_node, minimum_distance_neighbor_node))
         
@@ -327,22 +336,9 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int, num_nodes:int):
 
     # graphics
     label = "SSSP Found With Edges " + str(edges)
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
 
-    return "Dijkstra's Algorithm: ", sssp_list, neighbors_list, edges_list, labels_list
-
-# GET MAXIMUM NUMBER EDGES
-def get_maximum_number_edges(num_nodes:int):
-    """ finds the maximum number of edges for graph with num_nodes nodes
-
-    * num_nodes:int - number of nodes in graph
-
-    """
-    print("Calling Get Maximum Number Edges")
-
-    max_num_edges = num_nodes * (num_nodes - 1) // 2
-    print("Maximum Number Edges:", max_num_edges)
-    return max_num_edges
+    return "Dijkstra's Algorithm: ", sssp_list, neighbors_list, distances_list, edges_list, labels_list
 
 # GENERATE UNWEIGHTED GRAPH
 def generate_unweighted_graph(nodes:list[int], edges:list[tuple]):
@@ -407,13 +403,13 @@ def generate_graph_search_animation(function:callable):
 
     # generate nodes, random edges, and graph
     num_nodes = 8
-    starting_node = 1
-    destination_node = num_nodes
+    starting_node = 0
+    destination_node = num_nodes - 1
 
-    nodes = [i for i in range(1, num_nodes + 1)]
+    nodes = [i for i in range(0, num_nodes)]
     print(len(nodes), "Nodes Generated")
 
-    edges = [(1, 4), (1, 2), (2, 3), (2, 5), (5, 6), (5, 7), (7, 8)]
+    edges = [(0, 3), (0, 1), (1, 2), (1, 4), (4, 5), (4, 6), (6, 7)]
     print(len(edges), "Edges Generated")
 
     graph = generate_unweighted_graph(nodes=nodes, edges=edges)
@@ -448,7 +444,7 @@ def generate_graph_search_animation(function:callable):
         nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=path_nodes, node_color="yellow", edgecolors="black", node_size=450, linewidths=2)
 
         # labels frame
-        nx.draw_networkx_labels(G=graph, pos=pos, ax=ax, font_color="black")
+        nx.draw_networkx_labels(G=graph, pos=pos, ax=ax, font_color="black", font_size=8)
         ax.set_title(title, **font)
         ax.set_xlabel(label, **font)
 
@@ -466,19 +462,19 @@ def generate_graph_sssp_animation(function:callable):
 
     # generate nodes, random edges, and graph
     num_nodes = 8
-    starting_node = 1
-    destination_node = num_nodes
+    starting_node = 0
+    destination_node = num_nodes - 1
 
-    nodes = [i for i in range(1, num_nodes + 1)]
+    nodes = [i for i in range(0, num_nodes)]
     print(len(nodes), "Nodes Generated")
 
-    edges = [(1, 2, 8), (1, 7, 8), (2, 3, 7), (2, 5, 4), (2, 8, 2), (7, 8, 7), (7, 6, 1), (3, 4, 9), (3, 5, 14), (4, 5, 10), (5, 6, 2), (6, 8, 6)]
+    edges = [(0, 1, 8), (0, 6, 8), (1, 2, 7), (1, 4, 4), (1, 7, 2), (6, 7, 7), (6, 5, 1), (2, 3, 9), (2, 4, 14), (3, 4, 10), (4, 5, 2), (5, 7, 6)]
     print(len(edges), "Edges Generated")
 
     graph = generate_weighted_graph(nodes=nodes, edges=edges)
 
     # run sssp algorithm
-    title, sssp_list, neighbors_list, edges_list, labels_list = function(graph=graph, starting_node=starting_node, num_nodes=num_nodes)
+    title, sssp_list, neighbors_list, distances_list, edges_list, labels_list = function(graph=graph, starting_node=starting_node, num_nodes=num_nodes)
 
     pos = nx.spring_layout(G=graph)
     fig, ax = plt.subplots()
@@ -493,6 +489,7 @@ def generate_graph_sssp_animation(function:callable):
         sssp_nodes = sssp_list[frame]
         sssp_edges = edges_list[frame]
         neighbor_nodes = neighbors_list[frame]
+        distances = distances_list[frame]
         edge_labels = nx.get_edge_attributes(graph, 'weight')
         label = labels_list[frame]
 
@@ -509,7 +506,7 @@ def generate_graph_sssp_animation(function:callable):
         nx.draw_networkx_edge_labels(G=graph, pos=pos, ax=ax, edge_labels=edge_labels)
 
         # labels frame
-        nx.draw_networkx_labels(G=graph, pos=pos, ax=ax, font_color="black")
+        nx.draw_networkx_labels(G=graph, pos=pos, ax=ax, labels=distances, font_color="black", font_size=8)
         ax.set_title(title, **font)
         ax.set_xlabel(label, **font)
 
