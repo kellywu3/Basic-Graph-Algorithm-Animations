@@ -8,11 +8,11 @@ import logging
 random.seed(4)
 
 # UPDATE SEARCH ALGORITHM GRAPHICS
-def update_search_algorithm_graphics(traversed_list:list[list], visited_list:list[list], labels_list:list[str], path:list[int], visited:list[int], label:str):
+def update_search_algorithm_graphics(traversed_list:list[list[int]], visited_list:list[list[int]], labels_list:list[str], path:list[int], visited:list[int], label:str):
     """ updates graphical information for search algorithms
 
-        * traversed_list:list[list] - list of lists of traversed nodes
-        * visited_list:list[list] - list of lists of visited nodes
+        * traversed_list:list[list[int]] - list of lists of traversed nodes
+        * visited_list:list[list[int]] - list of lists of visited nodes
         * labels_list:list[str] - list of strings of labels
         * path:list[int] - traversed nodes list to be added to traversed_list
         * visited:list[int] - visited nodes list to be added to visited_list
@@ -210,13 +210,14 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
     return "Depth First Search:", traversed_list, visited_list, labels_list
 
 # UPDATE SSSP ALGORITHM GRAPHICS
-def update_sssp_algorithm_graphics(sssp_list:list[list], neighbors_list:list[list], distances_list:list[dict], edges_list:list[list], labels_list:list[str], sssp:list[int], neighbors:list[int], distances:dict, edges:list[tuple], label:str):
+def update_sssp_algorithm_graphics(sssp_list:list[list[int]], neighbors_list:list[list[int]], distances_list:list[dict], edges_list:list[list[tuple]], visited_edges_list:list[list[tuple]], labels_list:list[str], sssp:list[int], neighbors:list[int], distances:dict, edges:list[tuple], visited_edges:list[tuple], label:str):
     """ updates graphical information for sssp algorithms
 
-        * sssp_list:list[list] - list of lists of sssp nodes
-        * neighbors_list:list[list] - list of list of neighbor nodes
+        * sssp_list:list[list[int]] - list of lists of sssp nodes
+        * neighbors_list:list[list[int]] - list of list of neighbor nodes
         * distances_list:list[dict] - list of dict of distances from starting node
-        * edges_list:list[list] - list of list of edge nodes
+        * edges_list:list[list[tuple]] - list of list of edges
+        * visited_edges_list:list[list[tuple]] - list of list of visited edges
         * labels_list:list[str] - list of strings of labels
         * sssp:list[int] - sssp nodes list to be added to sssp_list
         * neighbors:list[int] - neighbor nodes list to be added to neighbors_list
@@ -235,6 +236,7 @@ def update_sssp_algorithm_graphics(sssp_list:list[list], neighbors_list:list[lis
     neighbors_list.append(neighbors.copy())
     distances_list.append(distances_formatted.copy())
     edges_list.append(edges.copy())
+    visited_edges_list.append(visited_edges.copy())
     labels_list.append(label)
 
 # GET SSSP NEIGHBORS
@@ -259,7 +261,7 @@ def get_sssp_neighbors(graph:nx.Graph, sssp:list[int]):
 # DIJKSTRA'S ALGORITHM
 def find_dijkstra_path(graph:nx.Graph, starting_node:int):
     """ finds shortest path in the graph between all nodes using dikstra's algorithm
-        returns title, sssp_list, neighbors_list, distances_list, edges_list, labels_list used for graphics
+        returns title, sssp_list, neighbors_list, distances_list, edges_list, visited_edges_list, labels_list used for graphics
 
         * graph:nx.Graph - graph to find path
         * starting_node:int - index of the first graph node
@@ -270,6 +272,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
     # final sssp
     sssp = []
     edges = []
+    visited_edges = []
     neighbors = []
 
     # list of distances from starting node to all nodes
@@ -281,9 +284,10 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
     neighbors_list = []
     distances_list = []
     edges_list = []
+    visited_edges_list = []
     label = "Finding SSSP From Node " + str(starting_node)
     labels_list = []
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
     # local memory used to help graphics
     minimum_distance_neighbor_node = starting_node
@@ -295,7 +299,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
 
     # graphics
     label = "Checking Neighbors of SSSP Nodes " + str(sssp)
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
     # while sssp doesn't include all nodes
     while len(sssp) < graph.number_of_nodes():        
@@ -304,7 +308,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
 
         # graphics
         label = "Node " + str(minimum_distance_neighbor_node) + " With Distance " + str(minimum_distance) + " Added to SSSP"
-        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
         # get neighbors of sssp
         neighbors = get_sssp_neighbors(graph=graph, sssp=sssp)
@@ -312,9 +316,17 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
         # get next minimum distance edge
         minimum_distance = np.inf
 
+        # for all neighbor nodes of sssp
         for sssp_node in sssp:
             for neighbor_node in graph.neighbors(sssp_node):
                 neighbor_distance = distances[sssp_node] + graph.get_edge_data(sssp_node, neighbor_node)['weight']
+
+                # graphics
+                edge = (sssp_node, neighbor_node)
+                if edge not in visited_edges:
+                    visited_edges.append(edge)
+
+                # if neighbor node has shorter distance
                 if neighbor_node not in sssp and neighbor_distance <= distances[neighbor_node]:
                     distances[neighbor_node] = neighbor_distance
 
@@ -326,7 +338,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
 
         # graphics
         label = "Checking Neighbors of SSSP Nodes " + str(sssp)
-        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
         
         edges.append((minimum_distance_sssp_node, minimum_distance_neighbor_node))
         
@@ -336,9 +348,9 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
 
     # graphics
     label = "SSSP Found With Edges " + str(edges)
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
-    return "Dijkstra's Algorithm:", sssp_list, neighbors_list, distances_list, edges_list, labels_list
+    return "Dijkstra's Algorithm:", sssp_list, neighbors_list, distances_list, edges_list, visited_edges_list, labels_list
 
 # BELLMAN-FORD ALGORITHM
 def find_bellmanford_path(graph:nx.Graph, starting_node:int):
@@ -356,6 +368,7 @@ def find_bellmanford_path(graph:nx.Graph, starting_node:int):
 
     # list of distances from starting node to all nodes
     edges = [(0, 0) for i in range(0, graph.number_of_nodes())]
+    visited_edges = []
     neighbors = []
     distances = {i:np.inf for i in range(0, graph.number_of_nodes())}
     distances[starting_node] = 0
@@ -365,9 +378,10 @@ def find_bellmanford_path(graph:nx.Graph, starting_node:int):
     neighbors_list = []
     distances_list = []
     edges_list = []
+    visited_edges_list = []
     label = "Finding SSSP From Node " + str(starting_node)
     labels_list = []
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
     # iterate for the number of nodes in graph - 1, if sssp changes in iteration number of nodes in graph, graph contains negative cycle
     for iteration in range(graph.number_of_nodes()):   
@@ -375,52 +389,75 @@ def find_bellmanford_path(graph:nx.Graph, starting_node:int):
         new_sssp_found = False
         sssp = []
         edges = [(0, 0) for i in range(0, graph.number_of_nodes())]
+        visited_edges = []
         label = "Iteration " + str(iteration)
-        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+        update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
         # check each edge in graph
         for edge in graph.edges():
             # edge nodes
-            edge_node_u = edge[0]
-            edge_node_v = edge[1]
-
-            # graphics
-            if edge_node_u not in sssp:
-                sssp.append(edge_node_u) 
-
-            if edge_node_v not in sssp:
-                sssp.append(edge_node_v)
+            edge_node_one = edge[0]
+            edge_node_two = edge[1]
 
             # edge distance
-            edge_distance = graph.get_edge_data(edge_node_u, edge_node_v)['weight']
-
-            # if new edge shortens distance to node
-            node_u_dist = distances[edge_node_v] + edge_distance
-            node_v_dist = distances[edge_node_u] + edge_distance
-
-            if node_u_dist <= distances[edge_node_u]:
-                edges[edge_node_u] = (edge_node_u, edge_node_v)
-
-                if node_u_dist < distances[edge_node_u]:
-                    distances[edge_node_u] = node_u_dist
-                    new_sssp_found = True
-
-            if node_v_dist <= distances[edge_node_v]:
-                edges[edge_node_v] = (edge_node_u, edge_node_v)
-
-                if node_v_dist < distances[edge_node_v]:
-                    distances[edge_node_v] = node_v_dist
-                    new_sssp_found = True
+            edge_distance = graph.get_edge_data(edge_node_one, edge_node_two)['weight']
+            edge = (edge_node_one, edge_node_two)
 
             # graphics
+            if edge not in visited_edges:
+                visited_edges.append(edge)
+            
+            # graphics
             label = "Checking Edge " + str(edge)
-            update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+            update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
+
+            # if new edge shortens distance to node
+            new_edge_added = False
+            node_u_dist = distances[edge_node_two] + edge_distance
+            node_v_dist = distances[edge_node_one] + edge_distance
+
+            if node_u_dist <= distances[edge_node_one]:
+                new_edge_added = True
+                edges[edge_node_one] = (edge_node_one, edge_node_two)
+
+                # graphics
+                if edge_node_one not in sssp:
+                    sssp.append(edge_node_one) 
+
+                if edge_node_two not in sssp:
+                    sssp.append(edge_node_two)
+
+                # update distances to be the smallest calculated distance
+                if node_u_dist < distances[edge_node_one]:
+                    distances[edge_node_one] = node_u_dist
+                    new_sssp_found = True
+
+            if node_v_dist <= distances[edge_node_two]:
+                new_edge_added = True
+                edges[edge_node_two] = (edge_node_one, edge_node_two)
+
+                # graphics
+                if edge_node_one not in sssp:
+                    sssp.append(edge_node_one) 
+
+                if edge_node_two not in sssp:
+                    sssp.append(edge_node_two)
+
+                # update distances to be the smallest calculated distance
+                if node_v_dist < distances[edge_node_two]:
+                    distances[edge_node_two] = node_v_dist
+                    new_sssp_found = True
+            
+            if new_edge_added:
+                # graphics
+                label = "Adding Edge " + str(edge)
+                update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
         
         # if sssp same as last iteration
         if not new_sssp_found:
             # graphics
             label = "SSSP Repeated From Last Iteration"
-            update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+            update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
             break
 
     print("Valid SSSP From Node", starting_node)
@@ -429,17 +466,17 @@ def find_bellmanford_path(graph:nx.Graph, starting_node:int):
 
     # graphics
     label = "SSSP Found With Edges " + str(edges)
-    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, label=label)
+    update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
-    return "Bellman-Ford Algorithm:", sssp_list, neighbors_list, distances_list, edges_list, labels_list
+    return "Bellman-Ford Algorithm:", sssp_list, neighbors_list, distances_list, edges_list, visited_edges_list, labels_list
 
 # UPDATE MST ALGORITHM GRAPHICS
-def update_mst_algorithm_graphics(mst_list:list[list], edges_list:list[list], visited_edges_list:list[list], labels_list:list[str], mst:list[int], edges:list[tuple], visited_edges:list[tuple], label:str):
+def update_mst_algorithm_graphics(mst_list:list[list[int]], edges_list:list[list[tuple]], visited_edges_list:list[list[tuple]], labels_list:list[str], mst:list[int], edges:list[tuple], visited_edges:list[tuple], label:str):
     """ updates graphical information for mst algorithms
 
-        * mst_list:list[list] - list of lists of mst nodes
-        * edges_list:list[list] - list of list of edge nodes
-        * visited_edges_list:list[list] - list of list of visited edge nodes
+        * mst_list:list[list[int]] - list of lists of mst nodes
+        * edges_list:list[list[tuple]] - list of list of edges
+        * visited_edges_list:list[list[tuple]] - list of list of visited edges
         * labels_list:list[str] - list of strings of labels
         * mst:list[int] - mst nodes list to be added to mst_list
         * edges:list[tuple] - edge tuples list to be added to edges_list
@@ -473,7 +510,7 @@ def find(node:int, representatives:list[int]):
 
 # UNION ALGORITHM
 def union(node_one:int, node_two:int, representatives:list[int]):
-    """ finds representative node of node
+    """ gets union of two node sets
 
         * node_one:int - node_one to find representative node
         * node_two:int - node_two to find representative node and join under node_one's set
@@ -515,39 +552,50 @@ def find_kruskal_path(graph:nx.Graph):
     labels_list = []
     update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
     
+    # iterate through each edge from smallest to largest weight
     for edge in edges_sorted:
-        if len(mst) < graph.number_of_edges():
+        # if mst is not complete
+        if len(mst) < graph.number_of_nodes():
             node_one = edge[0]
             node_two = edge[1]
+            edge = (node_one, node_two)
+            weight = graph.get_edge_data(node_one, node_two)['weight']
+            visited_edges.append(edge)
 
             # graphics
-            label = "Checking smallest weight edge " + str(edge)
+            label = "Checking Edge " + str(edge) + " With Weight " + str(weight)
             update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
 
+            # if cycle created
             if find(node=node_one, representatives=representatives) == find(node=node_two, representatives=representatives):
-                visited_edges.append(edge)
-
                 # graphics
-                label = "Edge creates cycle, dropping edge"
+                label = "Cycle Created, Dropping Edge"
                 update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
 
                 continue
             
+            # union set of node one and node two
             union(node_one=node_one, node_two=node_two, representatives=representatives)
 
+            # add nodes to mst list
             if node_one not in mst:
                 mst.append(node_one)
 
             if node_two not in mst:
                 mst.append(node_two)
 
+            # add edge to mst list
             edges.append(edge)
 
             # graphics
-            label = "Edge does not create cycle, edge added to mst"
+            label = "Edge Added to MST"
             update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
 
         else:
+            # graphics
+            label = "MST Contains All Nodes" + str(mst)
+            update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
             break
 
     # graphics
@@ -657,7 +705,7 @@ def generate_graph_search_animation(function:callable):
         nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=graph.nodes(), node_color="white", edgecolors="black", node_size=400, linewidths=1)
 
         # visited nodes frame
-        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=visited_nodes, node_color="grey", edgecolors="black", node_size=450, linewidths=1)
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=visited_nodes, node_color="lightgray", edgecolors="black", node_size=450, linewidths=1)
 
         # animation nodes frame
         nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=path_edges, edge_color="yellow", width=2)
@@ -694,7 +742,7 @@ def generate_graph_sssp_animation(function:callable):
     graph = generate_weighted_graph(nodes=nodes, edges=edges)
 
     # run sssp algorithm
-    title, sssp_list, neighbors_list, distances_list, edges_list, labels_list = function(graph=graph, starting_node=starting_node)
+    title, sssp_list, neighbors_list, distances_list, edges_list, visited_edges_list, labels_list = function(graph=graph, starting_node=starting_node)
 
     pos = nx.spring_layout(G=graph)
     fig, ax = plt.subplots()
@@ -708,6 +756,7 @@ def generate_graph_sssp_animation(function:callable):
 
         sssp_nodes = sssp_list[frame]
         sssp_edges = edges_list[frame]
+        visited_edges = visited_edges_list[frame]
         neighbor_nodes = neighbors_list[frame]
         distances = distances_list[frame]
         edge_labels = nx.get_edge_attributes(graph, 'weight')
@@ -717,8 +766,12 @@ def generate_graph_sssp_animation(function:callable):
         nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=graph.edges(), edge_color="black", width=1)
         nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=graph.nodes(), node_color="white", edgecolors="black", node_size=400, linewidths=1)
 
+        # visited edges frame
+        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=visited_edges, edge_color="lightgray", width=1)
+        nx.draw_networkx_edge_labels(G=graph, pos=pos, ax=ax, edge_labels=edge_labels)
+
         # neighbor nodes frame
-        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=neighbor_nodes, node_color="grey", edgecolors="black", node_size=450, linewidths=1)
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=neighbor_nodes, node_color="lightgray", edgecolors="black", node_size=450, linewidths=1)
 
         # animation nodes frame
         nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=sssp_edges, edge_color="yellow", width=2)
@@ -770,7 +823,7 @@ def generate_graph_mst_animation(function:callable):
 
         mst_nodes = mst_list[frame]
         mst_edges = edges_list[frame]
-        visited_mst_edges = visited_edges_list[frame]
+        visited_edges = visited_edges_list[frame]
         edge_labels = nx.get_edge_attributes(graph, 'weight')
         label = labels_list[frame]
 
@@ -779,7 +832,7 @@ def generate_graph_mst_animation(function:callable):
         nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=graph.nodes(), node_color="white", edgecolors="black", node_size=400, linewidths=1)
 
         # visited edges frame
-        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=visited_mst_edges, edge_color="gray", width=1)
+        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=visited_edges, edge_color="lightgray", width=1)
         nx.draw_networkx_edge_labels(G=graph, pos=pos, ax=ax, edge_labels=edge_labels)
 
         # animation edges frame
@@ -800,7 +853,7 @@ def generate_graph_mst_animation(function:callable):
 # generate_graph_search_animation(function=find_breadthfirstsearch_path)
 # generate_graph_search_animation(function=find_depthfirstsearch_path)
 
-# generate_graph_sssp_animation(function=find_dijkstra_path)
-# generate_graph_sssp_animation(function=find_bellmanford_path)
+generate_graph_sssp_animation(function=find_dijkstra_path)
+generate_graph_sssp_animation(function=find_bellmanford_path)
 
-generate_graph_mst_animation(function=find_kruskal_path)
+# generate_graph_mst_animation(function=find_kruskal_path)

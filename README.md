@@ -28,6 +28,8 @@ This Python program generates animations for graph algorithms. The program creat
 
 **Kruskal's Algorithm**
 
+![Alt Text](files/Kruskal's.gif)
+
 **Prim's Algorithm**
 
 ## LIBRARIES/REQUIREMENTS
