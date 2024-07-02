@@ -211,7 +211,7 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
 
 # UPDATE SSSP ALGORITHM GRAPHICS
 def update_sssp_algorithm_graphics(sssp_list:list[list], neighbors_list:list[list], distances_list:list[dict], edges_list:list[list], labels_list:list[str], sssp:list[int], neighbors:list[int], distances:dict, edges:list[tuple], label:str):
-    """ updates graphical information for search algorithms
+    """ updates graphical information for sssp algorithms
 
         * sssp_list:list[list] - list of lists of sssp nodes
         * neighbors_list:list[list] - list of list of neighbor nodes
@@ -225,7 +225,8 @@ def update_sssp_algorithm_graphics(sssp_list:list[list], neighbors_list:list[lis
         * label:str - label to be added to labels
 
     """
-    print("Calling Update Search Algorithm Graphics")
+    print("Calling Update SSSP Algorithm Graphics")
+
     distances_formatted = distances.copy()
     for i in range(len(distances_formatted)):
         distances_formatted[i] = str(i) + ": " + str(distances[i])
@@ -432,6 +433,133 @@ def find_bellmanford_path(graph:nx.Graph, starting_node:int):
 
     return "Bellman-Ford Algorithm:", sssp_list, neighbors_list, distances_list, edges_list, labels_list
 
+# UPDATE MST ALGORITHM GRAPHICS
+def update_mst_algorithm_graphics(mst_list:list[list], edges_list:list[list], visited_edges_list:list[list], labels_list:list[str], mst:list[int], edges:list[tuple], visited_edges:list[tuple], label:str):
+    """ updates graphical information for mst algorithms
+
+        * mst_list:list[list] - list of lists of mst nodes
+        * edges_list:list[list] - list of list of edge nodes
+        * visited_edges_list:list[list] - list of list of visited edge nodes
+        * labels_list:list[str] - list of strings of labels
+        * mst:list[int] - mst nodes list to be added to mst_list
+        * edges:list[tuple] - edge tuples list to be added to edges_list
+        * visited_edges:list[tuple] - edge tuples list to be added to edges_list
+        * label:str - label to be added to labels
+
+    """
+    print("Calling Update MST Algorithm Graphics")
+
+    mst_list.append(mst.copy())
+    edges_list.append(edges.copy())
+    visited_edges_list.append(visited_edges.copy())
+    labels_list.append(label)
+    
+# FIND ALGORITHM
+def find(node:int, representatives:list[int]):
+    """ finds representative node of node
+
+        * node:int - node to find representative node
+        * representatives:list[int] - list of representatives of each node
+
+    """
+    print("Calling Find Algorithm")
+
+    if node == representatives[node]:
+        return node
+    
+    parent = find(node=representatives[node], representatives=representatives)
+    representatives[node] = parent
+    return parent
+
+# UNION ALGORITHM
+def union(node_one:int, node_two:int, representatives:list[int]):
+    """ finds representative node of node
+
+        * node_one:int - node_one to find representative node
+        * node_two:int - node_two to find representative node and join under node_one's set
+        * representatives:list[int] - list of representatives of each node
+
+    """
+    print("Calling Union Algorithm")
+
+    node_one_representative = find(node=node_one, representatives=representatives)
+    node_two_representative = find(node=node_two, representatives=representatives)
+    representatives[node_two_representative] = node_one_representative
+
+# KRUSKAL'S ALGORITHM
+def find_kruskal_path(graph:nx.Graph):
+    """ finds minimum spanning tree in the graph between all nodes using kruskal's algorithm
+        returns title, mst_list, edges_list, visited_edges_list, labels_list
+
+        * graph:nx.Graph - graph to find path
+
+    """
+    print("Calling Kruskal's Algorithm")
+
+    # final mst
+    mst = []
+    edges = []
+    visited_edges = []
+    representatives = [i for i in range(0, graph.number_of_nodes())]
+
+    # list of ordered edge weights
+    edges_unsorted = graph.edges.data()
+    print(edges_unsorted)
+    edges_sorted = sorted(edges_unsorted, key=lambda tup:tup[2]['weight'])
+
+    # list of all mst nodes, mst edges, mst visited edges, and labels for graphics
+    mst_list = []
+    edges_list = []
+    visited_edges_list = []
+    label = "Finding MST"
+    labels_list = []
+    update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+    
+    for edge in edges_sorted:
+        if len(mst) < graph.number_of_edges():
+            node_one = edge[0]
+            node_two = edge[1]
+
+            # graphics
+            label = "Checking smallest weight edge " + str(edge)
+            update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+            if find(node=node_one, representatives=representatives) == find(node=node_two, representatives=representatives):
+                visited_edges.append(edge)
+
+                # graphics
+                label = "Edge creates cycle, dropping edge"
+                update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+                continue
+            
+            union(node_one=node_one, node_two=node_two, representatives=representatives)
+
+            if node_one not in mst:
+                mst.append(node_one)
+
+            if node_two not in mst:
+                mst.append(node_two)
+
+            edges.append(edge)
+
+            # graphics
+            label = "Edge does not create cycle, edge added to mst"
+            update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+        else:
+            break
+
+    # graphics
+    label = "MST Found With Edges " + str(edges)
+    update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+    print("Valid MST")
+    print("MST:", mst)
+    print("MST Edges:", edges)
+
+    return "Kruskal's Algorithm:", mst_list, edges_list, visited_edges_list, labels_list
+
 # GENERATE UNWEIGHTED GRAPH
 def generate_unweighted_graph(nodes:list[int], edges:list[tuple]):
     """ generates unweighted graph with given nodes and edges
@@ -605,12 +733,74 @@ def generate_graph_sssp_animation(function:callable):
     ani = animation.FuncAnimation(fig=fig, func=update, frames=len(sssp_list), interval=1200, repeat=True, repeat_delay=1200)
     plt.show()
 
+# GENERATE GRAPH MST ANIMATION
+def generate_graph_mst_animation(function:callable):
+    """ generates graph, finds mst, and animates process
 
+        * function:callable - search algorithm to animate
+
+    """
+    print("Calling Generate Graph MST Animation")
+
+    # generate nodes, random edges, and graph
+    num_nodes = 6
+    starting_node = 0
+    destination_node = num_nodes - 1
+
+    nodes = [i for i in range(0, num_nodes)]
+    print(len(nodes), "Nodes Generated")
+
+    edges = [(0, 1, 8), (0, 2, 8), (1, 2, 7), (1, 3, 4), (1, 4, 2), (2, 3, 7), (2, 5, 9), (3, 4, 14), (3, 5, 10), (4, 5, 2)]
+    print(len(edges), "Edges Generated")
+
+    graph = generate_weighted_graph(nodes=nodes, edges=edges)
+
+    # run mst algorithm
+    title, mst_list, edges_list, visited_edges_list, labels_list = function(graph=graph)
+
+    pos = nx.spring_layout(G=graph)
+    fig, ax = plt.subplots()
+
+    # font
+    font = {'fontname':"Trebuchet MS"}
+
+    # update function used to iterate through animation
+    def update(frame:int):
+        ax.clear()
+
+        mst_nodes = mst_list[frame]
+        mst_edges = edges_list[frame]
+        visited_mst_edges = visited_edges_list[frame]
+        edge_labels = nx.get_edge_attributes(graph, 'weight')
+        label = labels_list[frame]
+
+        # background frame
+        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=graph.edges(), edge_color="black", width=1)
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=graph.nodes(), node_color="white", edgecolors="black", node_size=400, linewidths=1)
+
+        # visited edges frame
+        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=visited_mst_edges, edge_color="gray", width=1)
+        nx.draw_networkx_edge_labels(G=graph, pos=pos, ax=ax, edge_labels=edge_labels)
+
+        # animation edges frame
+        nx.draw_networkx_edges(G=graph, pos=pos, ax=ax, edgelist=mst_edges, edge_color="yellow", width=2)
+        nx.draw_networkx_nodes(G=graph, pos=pos, ax=ax, nodelist=mst_nodes, node_color="yellow", edgecolors="black", node_size=450, linewidths=2)
+        nx.draw_networkx_edge_labels(G=graph, pos=pos, ax=ax, edge_labels=edge_labels)
+
+        # labels frame
+        nx.draw_networkx_labels(G=graph, pos=pos, ax=ax, font_color="black", font_size=8)
+        ax.set_title(title, **font)
+        ax.set_xlabel(label, **font)
+
+    ani = animation.FuncAnimation(fig=fig, func=update, frames=len(mst_list), interval=1200, repeat=True, repeat_delay=1200)
+    plt.show()
 
 # call animation functions
 
 # generate_graph_search_animation(function=find_breadthfirstsearch_path)
 # generate_graph_search_animation(function=find_depthfirstsearch_path)
 
-generate_graph_sssp_animation(function=find_dijkstra_path)
-generate_graph_sssp_animation(function=find_bellmanford_path)
+# generate_graph_sssp_animation(function=find_dijkstra_path)
+# generate_graph_sssp_animation(function=find_bellmanford_path)
+
+generate_graph_mst_animation(function=find_kruskal_path)

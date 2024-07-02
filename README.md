@@ -24,6 +24,12 @@ This Python program generates animations for graph algorithms. The program creat
 
 ![Alt Text](files/Bellman-Ford.gif)
 
+### MINIMUM SPANNING TREE ALGORITHMS
+
+**Kruskal's Algorithm**
+
+**Prim's Algorithm**
+
 ## LIBRARIES/REQUIREMENTS
 
 - [Matplotlib.pyplot](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html)
@@ -104,7 +110,7 @@ breadth_first_search(graph, starting_node, destination node) {
     let visited be a list
     mark starting_node as visited
 
-    while queue not empty {
+    while the queue is not empty {
 
         pop queue
         set path to the first entry in queue
@@ -194,7 +200,7 @@ dijkstras(graph, starting_node) {
 
     while sssp doesn't include all nodes {
 
-        let minimum_distance_node be a node not in SSSP with the minimum distance from SSSP
+        let minimum_distance_node be a node not in sssp with the minimum distance from sssp
         update distances of all adjacent vertices to be the distance from the source to the adjacent vertex
 
     }
@@ -231,6 +237,105 @@ bellman-ford(graph, starting_node) {
     }
 
     return SSSP
+
+}
+```
+
+### SINGLE SOURCE SHORTEST PATH ALGORITHMS
+
+- subset of edges, containing no cycles, that connects all vertices of a graph with the smallest possible total weight 
+
+**Kruskal's Algorithm**
+- graph algorithm to find the MST
+- must run on a weighted, connected, undirected graph
+- greedy algorithm
+
+```pseudo
+kruskals(graph) {
+
+    let mst be a list of edges
+    let edges be a list of edges sorted increasingly by weight
+
+    while mst doesn't include num_nodes - 1 edges and for each edge in edges {
+
+        if the edge forms a cycle {
+
+            discard the edge
+
+        } else {
+
+            add edge to mst
+
+        }
+
+    }
+
+}
+```
+
+**Prim's Algorithm**
+- graph algorithm to find the MST
+- must run on a weighted, connected, undirected graph
+- greedy algorithm
+
+```pseudo
+prims(graph) {
+
+    let node be an arbitrary node in the graph
+
+    while mst doesn't include all nodes {
+
+        let minimum_edge be an edge with minimum edge weight
+
+        while minimum_edge forms a cycle {
+
+            set minimum_edge to be the next smallest weight edge
+
+        }
+
+        add minimum_edge to mst
+
+    }
+
+}
+```
+
+### UTILITY ALGORITHMS
+
+**Union Find Algorithm**
+- algorithm used to detect cycles in graphs
+- logic:
+    - assumes each pair of nodes is contained in a separate set or tree of nodes
+    - each set of nodes has a representative node or highest level parent node
+    - find: finds the representative node of node
+    - union: joins the set of nodes under one representative node
+- if two sets of nodes have the same representative node, a cycle exists
+
+```pseudo
+find(node, representatives) {
+
+    let representatives be an existing list of each nodes representative nodes
+
+    if node representative is the same as node {
+
+        return node
+
+    }
+
+    let parent be find(node representative), recursively call find to find the representative of the set
+    set representative at node to parent
+    return parent
+
+}
+
+union(node_one, node_two, representatives) {
+
+    let representatives be an existing list of each nodes representative nodes
+
+    let node_one_representative be the representative of node_one
+    let node_two_representative be the representative of node_two
+
+    union node_one and node_two sets, set representatives at node_two_representative to be node_one_representative
 
 }
 ```
