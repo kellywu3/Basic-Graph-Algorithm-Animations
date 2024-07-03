@@ -93,7 +93,7 @@ pip freeze > requirements.txt
 
 ### Searching Algorithms
 
-- search for specific nodes from a starting node
+- path between a starting node and destination node
 
 **Breadth First Search**
 - graph traversal searching algorithm
@@ -300,6 +300,18 @@ prims(graph) {
     }
 
 }
+```
+
+### MAXIMUM FLOW ALGORITHMS
+
+- maximum amount of flow from a source node to a sink or destination node through a directed graph
+
+**Ford-Fulkerson Algorithm**
+
+- graph algorithm to find the maximum flow
+- must run on a weighted, connected, directed graph
+
+```pseudo
 ```
 
 ### UTILITY ALGORITHMS

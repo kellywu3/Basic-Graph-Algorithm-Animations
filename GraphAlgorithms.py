@@ -223,6 +223,7 @@ def update_sssp_algorithm_graphics(sssp_list:list[list[int]], neighbors_list:lis
         * neighbors:list[int] - neighbor nodes list to be added to neighbors_list
         * distances:dict - distances dict to be formatted and added to distances_list
         * edges:list[tuple] - edge tuples list to be added to edges_list
+        * visited_edges:list[tuple] - edge tuples list to be added to visited_edges_list
         * label:str - label to be added to labels
 
     """
@@ -239,21 +240,21 @@ def update_sssp_algorithm_graphics(sssp_list:list[list[int]], neighbors_list:lis
     visited_edges_list.append(visited_edges.copy())
     labels_list.append(label)
 
-# GET SSSP NEIGHBORS
-def get_sssp_neighbors(graph:nx.Graph, sssp:list[int]):
+# GET PATH NEIGHBORS
+def get_path_neighbors(graph:nx.Graph, path:list[int]):
     """ updates graphical information for search algorithms
 
         * graph:nx.Graph - graph to find path
-        * sssp:list[int] - sssp nodes list
+        * path:list[int] - path nodes list
 
     """
     print("Calling Update Search Algorithm Graphics")
 
     neighbors = []
 
-    for node in sssp:
+    for node in path:
         for neighbor in graph.neighbors(node):
-            if neighbor not in neighbors and neighbor not in sssp:
+            if neighbor not in neighbors and neighbor not in path:
                 neighbors.append(neighbor)
     
     return neighbors
@@ -295,7 +296,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
     minimum_distance = 0
 
     # get neighbors of sssp
-    neighbors = get_sssp_neighbors(graph=graph, sssp=sssp)
+    neighbors = get_path_neighbors(graph=graph, path=sssp)
 
     # graphics
     label = "Checking Neighbors of SSSP Nodes " + str(sssp)
@@ -311,7 +312,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
         update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
 
         # get neighbors of sssp
-        neighbors = get_sssp_neighbors(graph=graph, sssp=sssp)
+        neighbors = get_path_neighbors(graph=graph, path=sssp)
 
         # get next minimum distance edge
         minimum_distance = np.inf
@@ -541,7 +542,6 @@ def find_kruskal_path(graph:nx.Graph):
 
     # list of ordered edge weights
     edges_unsorted = graph.edges.data()
-    print(edges_unsorted)
     edges_sorted = sorted(edges_unsorted, key=lambda tup:tup[2]['weight'])
 
     # list of all mst nodes, mst edges, mst visited edges, and labels for graphics
@@ -608,8 +608,109 @@ def find_kruskal_path(graph:nx.Graph):
 
     return "Kruskal's Algorithm:", mst_list, edges_list, visited_edges_list, labels_list
 
-# GENERATE UNWEIGHTED GRAPH
-def generate_unweighted_graph(nodes:list[int], edges:list[tuple]):
+# PRIM'S ALGORITHM
+def find_prim_path(graph:nx.Graph):
+    """ finds minimum spanning tree in the graph between all nodes using prim's algorithm
+        returns title, mst_list, edges_list, visited_edges_list, labels_list
+
+        * graph:nx.Graph - graph to find path
+
+    """
+    print("Calling Prim's Algorithm")
+
+    # final mst
+    mst = []
+    edges = []
+    visited_edges = []
+    representatives = [i for i in range(0, graph.number_of_nodes())]
+
+    # list of all mst nodes, mst edges, mst visited edges, and labels for graphics
+    mst_list = []
+    edges_list = []
+    visited_edges_list = []
+    label = "Finding MST"
+    labels_list = []
+    update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+    # choose random starting node
+    starting_node = random.randrange(0, nx.number_of_nodes(graph))
+    mst.append(starting_node)
+
+    # graphics
+    label = "Starting From Random Node " + str(starting_node)
+    update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+    # local memory used to help graphics
+    minimum_weight_neighbor_node = starting_node
+    minimum_weight_mst_node = None
+    minimum_weight = 0
+
+    # get neighbors of mst
+    neighbors = get_path_neighbors(graph=graph, path=mst)
+
+    # while mst doesn't include all nodes
+    while len(mst) < graph.number_of_nodes():
+        visited_edges = []        
+
+        # get next minimum distance edge
+        minimum_weight = np.inf
+
+        # graphics
+        label = "Checking Neighbors of MST Nodes " + str(mst)
+        update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+        # for all neighbor edges of mst
+        for mst_node in mst:
+            for neighbor_node in graph.neighbors(mst_node):
+                if neighbor_node not in mst:
+                    edge = (mst_node, neighbor_node)
+
+                    if edge not in visited_edges and edge not in edges:
+                        # graphics
+                        visited_edges.append(edge)
+                        label = "Checking Neighbor Edge " + str(edge) + " of MST"
+                        update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+                        # if cycle created
+                        if find(node=mst_node, representatives=representatives) == find(node=neighbor_node, representatives=representatives):
+                            # graphics
+                            label = "Cycle Created, Dropping Edge"
+                            update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+                            continue
+
+                        # get weight of edge
+                        edge_weight = graph.get_edge_data(mst_node, neighbor_node)['weight']
+                        
+                        # if neighbor edge has smaller weight 
+                        if neighbor_node not in mst and edge_weight < minimum_weight:
+                            minimum_weight = edge_weight
+                            minimum_weight_mst_node = mst_node
+                            minimum_weight_neighbor_node = neighbor_node
+
+        # add smallest weight edge to mst
+        edges.append((minimum_weight_mst_node, minimum_weight_neighbor_node))
+        mst.append(minimum_weight_neighbor_node)
+
+        # union set of mst_node and and added neighbor_node
+        union(node_one=mst_node, node_two=neighbor_node, representatives=representatives)
+
+        # graphics
+        label = "Adding Smallest Weight Edge " + str(edge) + " to MST"
+        update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+    # graphics
+    label = "MST Found With Edges " + str(edges)
+    update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
+
+    print("Valid MST")
+    print("MST:", mst)
+    print("MST Edges:", edges)
+
+    return "Prim's Algorithm:", mst_list, edges_list, visited_edges_list, labels_list
+
+# GENERATE UNWEIGHTED UNDIRECTED GRAPH
+def generate_unweighted_undirected_graph(nodes:list[int], edges:list[tuple]):
     """ generates unweighted graph with given nodes and edges
 
         * nodes:list[int] - list of nodes to add to graph
@@ -634,8 +735,8 @@ def generate_unweighted_graph(nodes:list[int], edges:list[tuple]):
 
     return graph
 
-# GENERATE WEIGHTED GRAPH
-def generate_weighted_graph(nodes:list[int], edges:list[tuple]):
+# GENERATE WEIGHTED UNDIRECTED GRAPH
+def generate_weighted_undirected_graph(nodes:list[int], edges:list[tuple]):
     """ generates weighted graph with given nodes and edges
 
         * nodes:list[int] - list of nodes to add to graph
@@ -680,7 +781,7 @@ def generate_graph_search_animation(function:callable):
     edges = [(0, 3), (0, 1), (1, 2), (1, 4), (4, 5), (4, 6), (6, 7)]
     print(len(edges), "Edges Generated")
 
-    graph = generate_unweighted_graph(nodes=nodes, edges=edges)
+    graph = generate_unweighted_undirected_graph(nodes=nodes, edges=edges)
 
     # run search algorithm
     title, traversed_list, visited_list, labels_list = function(graph=graph, starting_node=starting_node, destination_node=destination_node)
@@ -739,7 +840,7 @@ def generate_graph_sssp_animation(function:callable):
     edges = [(0, 1, 8), (0, 2, 8), (1, 2, 7), (1, 3, 4), (1, 4, 2), (2, 3, 7), (2, 5, 9), (3, 4, 14), (3, 5, 10), (4, 5, 2)]
     print(len(edges), "Edges Generated")
 
-    graph = generate_weighted_graph(nodes=nodes, edges=edges)
+    graph = generate_weighted_undirected_graph(nodes=nodes, edges=edges)
 
     # run sssp algorithm
     title, sssp_list, neighbors_list, distances_list, edges_list, visited_edges_list, labels_list = function(graph=graph, starting_node=starting_node)
@@ -806,7 +907,7 @@ def generate_graph_mst_animation(function:callable):
     edges = [(0, 1, 8), (0, 2, 8), (1, 2, 7), (1, 3, 4), (1, 4, 2), (2, 3, 7), (2, 5, 9), (3, 4, 14), (3, 5, 10), (4, 5, 2)]
     print(len(edges), "Edges Generated")
 
-    graph = generate_weighted_graph(nodes=nodes, edges=edges)
+    graph = generate_weighted_undirected_graph(nodes=nodes, edges=edges)
 
     # run mst algorithm
     title, mst_list, edges_list, visited_edges_list, labels_list = function(graph=graph)
@@ -853,7 +954,8 @@ def generate_graph_mst_animation(function:callable):
 # generate_graph_search_animation(function=find_breadthfirstsearch_path)
 # generate_graph_search_animation(function=find_depthfirstsearch_path)
 
-generate_graph_sssp_animation(function=find_dijkstra_path)
-generate_graph_sssp_animation(function=find_bellmanford_path)
+# generate_graph_sssp_animation(function=find_dijkstra_path)
+# generate_graph_sssp_animation(function=find_bellmanford_path)
 
 # generate_graph_mst_animation(function=find_kruskal_path)
+generate_graph_mst_animation(function=find_prim_path)
