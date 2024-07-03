@@ -32,6 +32,8 @@ This Python program generates animations for graph algorithms. The program creat
 
 **Prim's Algorithm**
 
+![Alt Text](files/Prim's.gif)
+
 ## LIBRARIES/REQUIREMENTS
 
 - [Matplotlib.pyplot](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html)

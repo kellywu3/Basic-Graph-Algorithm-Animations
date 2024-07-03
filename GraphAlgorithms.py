@@ -645,9 +645,6 @@ def find_prim_path(graph:nx.Graph):
     minimum_weight_mst_node = None
     minimum_weight = 0
 
-    # get neighbors of mst
-    neighbors = get_path_neighbors(graph=graph, path=mst)
-
     # while mst doesn't include all nodes
     while len(mst) < graph.number_of_nodes():
         visited_edges = []        
