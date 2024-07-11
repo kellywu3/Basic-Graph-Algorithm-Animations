@@ -5,10 +5,11 @@ import networkx as nx
 import random
 import logging
 
+logging.basicConfig(level=logging.DEBUG)
 random.seed(4)
 
 # UPDATE SEARCH ALGORITHM GRAPHICS
-def update_search_algorithm_graphics(traversed_list:list[list[int]], visited_list:list[list[int]], labels_list:list[str], path:list[int], visited:list[int], label:str):
+def update_search_algorithm_graphics(traversed_list:list[list[int]], visited_list:list[list[int]], labels_list:list[str], path:list[int], visited:list[int], label:str) -> None:
     """ updates graphical information for search algorithms
 
         * traversed_list:list[list[int]] - list of lists of traversed nodes
@@ -19,7 +20,7 @@ def update_search_algorithm_graphics(traversed_list:list[list[int]], visited_lis
         * label:str - label to be added to labels
 
     """
-    print("Calling Update Search Algorithm Graphics")
+    logging.info("Calling Update Search Algorithm Graphics")
 
     traversed_list.append(path.copy())
     visited_list.append(visited.copy())
@@ -35,7 +36,7 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
         * destination_node:int - index of the destination node
 
     """
-    print("Calling Iterative Breadth First Search")
+    logging.info("Calling Iterative Breadth First Search")
 
     # final path
     path = []
@@ -94,8 +95,8 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
 
                 # if node at end of path is destination, return path found
                 if neighbor_node == destination_node:
-                    print("Valid Path From Node", starting_node, "to Node", destination_node)
-                    print("Path:", new_path)
+                    logging.debug(f"Valid Path From Node {starting_node} to Node {destination_node}")
+                    logging.debug(f"Path: {new_path}")
 
                     # graphics
                     label = "Path Found at " + str(new_path)
@@ -113,7 +114,7 @@ def find_breadthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_
                     update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     # if destination not found, return path not found 
-    print("No Valid Path From Node", starting_node, "to Node", destination_node)
+    logging.debug(f"No Valid Path From Node {starting_node} to Node {destination_node}")
 
     # graphics
     label = "No Path Found"
@@ -131,7 +132,7 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
         * destination_node:int - index of the destination node
 
     """
-    print("Calling Depth First Search")
+    logging.info("Calling Depth First Search")
 
     # final path
     path = []
@@ -185,8 +186,8 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
 
             # if node at end of path is destination, return path found
             if neighbor_node == destination_node:
-                print("Valid Path From Node", starting_node, "to Node", destination_node)
-                print("Path:", new_path)
+                logging.debug(f"Valid Path From Node {starting_node} to Node {destination_node}")
+                logging.debug(f"Path: {new_path}")
 
                 # graphics
                 label = "Path Found at " + str(new_path)
@@ -201,7 +202,7 @@ def find_depthfirstsearch_path(graph:nx.Graph, starting_node:int, destination_no
             update_search_algorithm_graphics(traversed_list=traversed_list, visited_list=visited_list, labels_list=labels_list, path=path, visited=visited, label=label)
 
     # if destination not found, return path not found 
-    print("No Valid Path From Node", starting_node, "to Node", destination_node)
+    logging.debug(f"No Valid Path From Node {starting_node} to Node {destination_node}")
 
     # graphics
     label = "No Path Found"
@@ -227,7 +228,7 @@ def update_sssp_algorithm_graphics(sssp_list:list[list[int]], neighbors_list:lis
         * label:str - label to be added to labels
 
     """
-    print("Calling Update SSSP Algorithm Graphics")
+    logging.info("Calling Update SSSP Algorithm Graphics")
 
     distances_formatted = distances.copy()
     for i in range(len(distances_formatted)):
@@ -248,7 +249,7 @@ def get_path_neighbors(graph:nx.Graph, path:list[int]):
         * path:list[int] - path nodes list
 
     """
-    print("Calling Update Search Algorithm Graphics")
+    logging.info("Calling Update Search Algorithm Graphics")
 
     neighbors = []
 
@@ -268,7 +269,7 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
         * starting_node:int - index of the first graph node
 
     """
-    print("Calling Dijkstra's Algorithm")
+    logging.info("Calling Dijkstra's Algorithm")
 
     # final sssp
     sssp = []
@@ -343,9 +344,9 @@ def find_dijkstra_path(graph:nx.Graph, starting_node:int):
         
         edges.append((minimum_distance_sssp_node, minimum_distance_neighbor_node))
         
-    print("Valid SSSP From Node", starting_node)
-    print("SSSP:", sssp)
-    print("SSSP Edges:", edges)
+    logging.debug(f"Valid SSSP From Node {starting_node}")
+    logging.debug(f"SSSP: {sssp}")
+    logging.debug(f"SSSP Edges: {edges}")
 
     # graphics
     label = "SSSP Found With Edges " + str(edges)
@@ -362,7 +363,7 @@ def find_bellmanford_path(graph:nx.Graph, starting_node:int):
         * starting_node:int - index of the first graph node
 
     """
-    print("Calling Bellman-Ford Algorithm")
+    logging.info("Calling Bellman-Ford Algorithm")
 
     # final sssp
     sssp = []
@@ -461,9 +462,9 @@ def find_bellmanford_path(graph:nx.Graph, starting_node:int):
             update_sssp_algorithm_graphics(sssp_list=sssp_list, neighbors_list=neighbors_list, distances_list=distances_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, sssp=sssp, neighbors=neighbors, distances=distances, edges=edges, visited_edges=visited_edges, label=label)
             break
 
-    print("Valid SSSP From Node", starting_node)
-    print("SSSP:", sssp)
-    print("SSSP Edges:", edges)
+    logging.debug(f"Valid SSSP From Node {starting_node}")
+    logging.debug(f"SSSP: {sssp}")
+    logging.debug(f"SSSP Edges: {edges}")
 
     # graphics
     label = "SSSP Found With Edges " + str(edges)
@@ -485,7 +486,7 @@ def update_mst_algorithm_graphics(mst_list:list[list[int]], edges_list:list[list
         * label:str - label to be added to labels
 
     """
-    print("Calling Update MST Algorithm Graphics")
+    logging.info("Calling Update MST Algorithm Graphics")
 
     mst_list.append(mst.copy())
     edges_list.append(edges.copy())
@@ -500,7 +501,7 @@ def find(node:int, representatives:list[int]):
         * representatives:list[int] - list of representatives of each node
 
     """
-    print("Calling Find Algorithm")
+    logging.info("Calling Find Algorithm")
 
     if node == representatives[node]:
         return node
@@ -518,7 +519,7 @@ def union(node_one:int, node_two:int, representatives:list[int]):
         * representatives:list[int] - list of representatives of each node
 
     """
-    print("Calling Union Algorithm")
+    logging.info("Calling Union Algorithm")
 
     node_one_representative = find(node=node_one, representatives=representatives)
     node_two_representative = find(node=node_two, representatives=representatives)
@@ -532,7 +533,7 @@ def find_kruskal_path(graph:nx.Graph):
         * graph:nx.Graph - graph to find path
 
     """
-    print("Calling Kruskal's Algorithm")
+    logging.info("Calling Kruskal's Algorithm")
 
     # final mst
     mst = []
@@ -602,9 +603,9 @@ def find_kruskal_path(graph:nx.Graph):
     label = "MST Found With Edges " + str(edges)
     update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
 
-    print("Valid MST")
-    print("MST:", mst)
-    print("MST Edges:", edges)
+    logging.debug(f"Valid MST")
+    logging.debug(f"MST: {mst}")
+    logging.debug(f"MST Edges: {edges}")
 
     return "Kruskal's Algorithm:", mst_list, edges_list, visited_edges_list, labels_list
 
@@ -616,7 +617,7 @@ def find_prim_path(graph:nx.Graph):
         * graph:nx.Graph - graph to find path
 
     """
-    print("Calling Prim's Algorithm")
+    logging.info("Calling Prim's Algorithm")
 
     # final mst
     mst = []
@@ -700,9 +701,9 @@ def find_prim_path(graph:nx.Graph):
     label = "MST Found With Edges " + str(edges)
     update_mst_algorithm_graphics(mst_list=mst_list, edges_list=edges_list, visited_edges_list=visited_edges_list, labels_list=labels_list, mst=mst, edges=edges, visited_edges=visited_edges, label=label)
 
-    print("Valid MST")
-    print("MST:", mst)
-    print("MST Edges:", edges)
+    logging.debug(f"Valid MST")
+    logging.debug(f"MST: {mst}")
+    logging.debug(f"MST Edges: {edges}")
 
     return "Prim's Algorithm:", mst_list, edges_list, visited_edges_list, labels_list
 
@@ -714,21 +715,21 @@ def generate_unweighted_undirected_graph(nodes:list[int], edges:list[tuple]):
         * edges:list[tuple] - list of edges to add to graph
 
     """
-    print("Calling Generate Graph")
+    logging.info("Calling Generate Graph")
 
     graph = nx.Graph()
-    print("Number of Nodes:", len(nodes))
-    print("Number of Edges:", len(edges))
+    logging.debug(f"Number of Nodes: {len(nodes)}")
+    logging.debug(f"Number of Edges: {len(edges)}")
 
     # add nodes [1, number_nodes] to graph
     graph.add_nodes_from(nodes_for_adding=nodes)
-    print("Number of Nodes Added:", graph.number_of_nodes())
-    print("Nodes in Graph:", graph.nodes())
+    logging.debug(f"Number of Nodes Added: {graph.number_of_nodes()}")
+    logging.debug(f"Nodes in Graph:", graph.nodes())
 
     # add edges [1, number_edges] to graph
     graph.add_edges_from(ebunch_to_add=edges)
-    print("Number of Edges Added:", graph.number_of_edges())
-    print("Edges in Graph:", graph.edges())
+    logging.debug(f"Number of Edges Added: {graph.number_of_edges()}")
+    logging.debug(f"Edges in Graph: {graph.edges()}")
 
     return graph
 
@@ -740,32 +741,32 @@ def generate_weighted_undirected_graph(nodes:list[int], edges:list[tuple]):
         * edges:list[tuple] - list of edges to add to graph
 
     """
-    print("Calling Generate Graph")
+    logging.info("Calling Generate Graph")
 
     graph = nx.Graph()
-    print("Number of Nodes:", len(nodes))
-    print("Number of Edges:", len(edges))
+    logging.debug(f"Number of Nodes: {len(nodes)}")
+    logging.debug(f"Number of Edges: {len(edges)}")
 
     # add nodes [1, number_nodes] to graph
     graph.add_nodes_from(nodes_for_adding=nodes)
-    print("Number of Nodes Added:", graph.number_of_nodes())
-    print("Nodes in Graph:", graph.nodes())
+    logging.debug(f"Number of Nodes Added: {graph.number_of_nodes()}")
+    logging.debug(f"Nodes in Graph: {graph.nodes()}")
 
     # add edges [1, number_edges] to graph
     graph.add_weighted_edges_from(ebunch_to_add=edges)
-    print("Number of Edges Added:", graph.number_of_edges())
-    print("Edges in Graph:", graph.edges())
+    logging.debug(f"Number of Edges Added: {graph.number_of_edges()}")
+    logging.debug(f"Edges in Graph: {graph.edges()}")
 
     return graph
 
 # GENERATE GRAPH SEARCH ANIMATION
-def generate_graph_search_animation(function:callable):
+def generate_graph_search_animation(function:callable) -> None:
     """ generates graph, finds path from starting_node to destination_node, and animates process
 
         * function:callable - search algorithm to animate
 
     """
-    print("Calling Generate Graph Search Animation")
+    logging.info("Calling Generate Graph Search Animation")
 
     # generate nodes, random edges, and graph
     num_nodes = 8
@@ -773,10 +774,10 @@ def generate_graph_search_animation(function:callable):
     destination_node = num_nodes - 1
 
     nodes = [i for i in range(0, num_nodes)]
-    print(len(nodes), "Nodes Generated")
+    logging.debug(f"{len(nodes)} Nodes Generated")
 
     edges = [(0, 3), (0, 1), (1, 2), (1, 4), (4, 5), (4, 6), (6, 7)]
-    print(len(edges), "Edges Generated")
+    logging.debug(f"{len(edges)} Edges Generated")
 
     graph = generate_unweighted_undirected_graph(nodes=nodes, edges=edges)
 
@@ -790,7 +791,7 @@ def generate_graph_search_animation(function:callable):
     font = {'fontname':"Trebuchet MS"}
 
     # update function used to iterate through animation
-    def update(frame:int):
+    def update(frame:int) -> None:
         ax.clear()
 
         path_nodes = traversed_list[frame]
@@ -818,13 +819,13 @@ def generate_graph_search_animation(function:callable):
     plt.show()
 
 # GENERATE GRAPH SSSP ANIMATION
-def generate_graph_sssp_animation(function:callable):
+def generate_graph_sssp_animation(function:callable) -> None:
     """ generates graph, finds sssp, and animates process
 
         * function:callable - search algorithm to animate
 
     """
-    print("Calling Generate Graph SSSP Animation")
+    logging.info("Calling Generate Graph SSSP Animation")
 
     # generate nodes, random edges, and graph
     num_nodes = 6
@@ -832,10 +833,10 @@ def generate_graph_sssp_animation(function:callable):
     destination_node = num_nodes - 1
 
     nodes = [i for i in range(0, num_nodes)]
-    print(len(nodes), "Nodes Generated")
+    logging.debug(f"{len(nodes)} Nodes Generated")
 
     edges = [(0, 1, 8), (0, 2, 8), (1, 2, 7), (1, 3, 4), (1, 4, 2), (2, 3, 7), (2, 5, 9), (3, 4, 14), (3, 5, 10), (4, 5, 2)]
-    print(len(edges), "Edges Generated")
+    logging.debug(f"{len(edges)} Edges Generated")
 
     graph = generate_weighted_undirected_graph(nodes=nodes, edges=edges)
 
@@ -849,7 +850,7 @@ def generate_graph_sssp_animation(function:callable):
     font = {'fontname':"Trebuchet MS"}
 
     # update function used to iterate through animation
-    def update(frame:int):
+    def update(frame:int) -> None:
         ax.clear()
 
         sssp_nodes = sssp_list[frame]
@@ -885,13 +886,13 @@ def generate_graph_sssp_animation(function:callable):
     plt.show()
 
 # GENERATE GRAPH MST ANIMATION
-def generate_graph_mst_animation(function:callable):
+def generate_graph_mst_animation(function:callable) -> None:
     """ generates graph, finds mst, and animates process
 
         * function:callable - search algorithm to animate
 
     """
-    print("Calling Generate Graph MST Animation")
+    logging.info("Calling Generate Graph MST Animation")
 
     # generate nodes, random edges, and graph
     num_nodes = 6
@@ -899,10 +900,10 @@ def generate_graph_mst_animation(function:callable):
     destination_node = num_nodes - 1
 
     nodes = [i for i in range(0, num_nodes)]
-    print(len(nodes), "Nodes Generated")
+    logging.debug(f"{len(nodes)} Nodes Generated")
 
     edges = [(0, 1, 8), (0, 2, 8), (1, 2, 7), (1, 3, 4), (1, 4, 2), (2, 3, 7), (2, 5, 9), (3, 4, 14), (3, 5, 10), (4, 5, 2)]
-    print(len(edges), "Edges Generated")
+    logging.debug(f"{len(edges)} Edges Generated")
 
     graph = generate_weighted_undirected_graph(nodes=nodes, edges=edges)
 
@@ -916,7 +917,7 @@ def generate_graph_mst_animation(function:callable):
     font = {'fontname':"Trebuchet MS"}
 
     # update function used to iterate through animation
-    def update(frame:int):
+    def update(frame:int) -> None:
         ax.clear()
 
         mst_nodes = mst_list[frame]
@@ -948,11 +949,11 @@ def generate_graph_mst_animation(function:callable):
 
 # call animation functions
 
-# generate_graph_search_animation(function=find_breadthfirstsearch_path)
-# generate_graph_search_animation(function=find_depthfirstsearch_path)
+generate_graph_search_animation(function=find_breadthfirstsearch_path)
+generate_graph_search_animation(function=find_depthfirstsearch_path)
 
-# generate_graph_sssp_animation(function=find_dijkstra_path)
-# generate_graph_sssp_animation(function=find_bellmanford_path)
+generate_graph_sssp_animation(function=find_dijkstra_path)
+generate_graph_sssp_animation(function=find_bellmanford_path)
 
-# generate_graph_mst_animation(function=find_kruskal_path)
+generate_graph_mst_animation(function=find_kruskal_path)
 generate_graph_mst_animation(function=find_prim_path)

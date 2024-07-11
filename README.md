@@ -40,6 +40,7 @@ This Python program generates animations for graph algorithms. The program creat
 - [Matplotlib.animation](https://matplotlib.org/stable/api/animation_api.html)
 - [NumPy](https://numpy.org)
 - [NetworkX](https://networkx.org)
+- [Logging](https://docs.python.org/3/library/logging.html)
 
 ## TOOLS
 
@@ -90,6 +91,9 @@ freeze requirements:
 ```shell
 pip freeze > requirements.txt
 ```
+
+[**Logging**](https://docs.python.org/3/howto/logging.html)
+- python logging library, allows event tracking and output visibility
 
 ## CONCEPTS
 
