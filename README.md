@@ -8,31 +8,31 @@ This Python program generates animations for graph algorithms. The program creat
 
 **Breadth First Search**
 
-![Alt Text](files/BreadthFirstSearch.gif)
+![Breadth First Search](files/BreadthFirstSearch.gif)
 
 **Depth First Search**
 
-![Alt Text](files/DepthFirstSearch.gif)
+![Depth First Search](files/DepthFirstSearch.gif)
 
 ### SINGLE SOURCE SHORTEST PATH ALGORITHMS
 
 **Dijkstra's Algorithm**
 
-![Alt Text](files/Dijkstra's.gif)
+![Dijkstra's Algorithm](files/Dijkstra's.gif)
 
 **Bellman-Ford Algorithm**
 
-![Alt Text](files/Bellman-Ford.gif)
+![Bellman-Ford Algorithm](files/Bellman-Ford.gif)
 
 ### MINIMUM SPANNING TREE ALGORITHMS
 
 **Kruskal's Algorithm**
 
-![Alt Text](files/Kruskal's.gif)
+![Kruskal's Algorithm](files/Kruskal's.gif)
 
 **Prim's Algorithm**
 
-![Alt Text](files/Prim's.gif)
+![Prim's Algorithm](files/Prim's.gif)
 
 ## LIBRARIES/REQUIREMENTS
 
